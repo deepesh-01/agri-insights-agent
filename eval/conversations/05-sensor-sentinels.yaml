@@ -1,0 +1,54 @@
+id: sensor-sentinels
+title: Soil moisture, where the sentinel trap decides the answer
+tags: [sensor, sentinels, trap, refinement]
+note: >
+  sensor_reading.value carries -273, -99, 500 and 999.9 from faulty sensors.
+  Including them moves the average measurably, so this conversation is decided
+  entirely by whether the agent knows to exclude them.
+turns:
+  - user: average soil moisture in Dharwad
+    category: first_turn
+    expect: answer
+    intent: NEW_TOPIC
+    note: >
+      The plot count is part of the expected answer, not decoration. Only 202
+      of 450 plots are instrumented, so the sensor_coverage rule requires
+      stating how many a sensor average covers - and the few-shot example for
+      this exact question answers it with both columns. An earlier version of
+      this gold had one column, which scored the model wrong for following its
+      own instructions.
+    gold_sql: |
+      SELECT avg(s.value) AS avg_soil_moisture,
+             count(DISTINCT s.plot_id) AS plots
+      FROM agri.sensor_reading s
+      JOIN agri.plot p ON p.id = s.plot_id
+      WHERE p.district = 'Dharwad'
+        AND s.reading_type = 'soil_moisture'
+        AND s.value NOT IN (-273, -99, 500, 999.9)
+
+  - user: break it down by soil type
+    category: follow_up
+    expect: answer
+    intent: REFERENCE
+    gold_sql: |
+      SELECT p.soil_type, avg(s.value) AS avg_soil_moisture
+      FROM agri.sensor_reading s
+      JOIN agri.plot p ON p.id = s.plot_id
+      WHERE p.district = 'Dharwad'
+        AND s.reading_type = 'soil_moisture'
+        AND s.value NOT IN (-273, -99, 500, 999.9)
+      GROUP BY p.soil_type
+
+  - user: what about temperature instead?
+    category: follow_up
+    expect: answer
+    intent: REFERENCE
+    note: reading_type changes; district, grouping and the sentinel filter stay
+    gold_sql: |
+      SELECT p.soil_type, avg(s.value) AS avg_temperature
+      FROM agri.sensor_reading s
+      JOIN agri.plot p ON p.id = s.plot_id
+      WHERE p.district = 'Dharwad'
+        AND s.reading_type = 'temperature'
+        AND s.value NOT IN (-273, -99, 500, 999.9)
+      GROUP BY p.soil_type

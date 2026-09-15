@@ -1,0 +1,49 @@
+id: ambiguous-district
+title: District ambiguity, clarified once and then reused
+tags: [ambiguous, clarification, district, session-memory]
+note: >
+  plot.district and farmer.district disagree for 91 of 450 plots and the two
+  readings give materially different averages, so this is a real ambiguity
+  rather than mild uncertainty. Turn 4 checks that the settled answer is
+  applied without asking again.
+turns:
+  - user: what is the average yield in Belgaum?
+    category: ambiguous
+    expect: clarify
+    intent: NEW_TOPIC
+    note: must ask which district column is meant, not guess
+
+  - user: plots located there
+    category: follow_up
+    expect: answer
+    intent: REFINE
+    note: the clarification is answered and must now be applied
+    gold_sql: |
+      SELECT avg(c.actual_yield / p.area_hectares) AS yield_per_ha
+      FROM agri.crop_cycle c
+      JOIN agri.plot p ON p.id = c.plot_id
+      WHERE p.district = 'Belgaum'
+        AND c.actual_yield IS NOT NULL
+
+  - user: and in Dharwad?
+    category: follow_up
+    expect: answer
+    intent: REFERENCE
+    note: >
+      Must NOT ask the district question again - the brief requires a settled
+      clarification to be remembered for the rest of the session.
+    gold_sql: |
+      SELECT avg(c.actual_yield / p.area_hectares) AS yield_per_ha
+      FROM agri.crop_cycle c
+      JOIN agri.plot p ON p.id = c.plot_id
+      WHERE p.district = 'Dharwad'
+        AND c.actual_yield IS NOT NULL
+
+  - user: how many of those plots are rainfed?
+    category: follow_up
+    expect: answer
+    intent: REFINE
+    gold_sql: |
+      SELECT count(*) AS rainfed_plots
+      FROM agri.plot p
+      WHERE p.district = 'Dharwad' AND p.irrigation_type = 'rainfed'

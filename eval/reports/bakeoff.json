@@ -1,0 +1,59 @@
+[
+  {
+    "model": "qwen2.5-coder-7b",
+    "mode": "full",
+    "started_at": "2026-09-13T11:18:53",
+    "catalog_version": 5,
+    "prompt_versions": {
+      "classify_intent": 2,
+      "generate_sql": 8,
+      "generate_sql_examples": 8,
+      "narrate": 3
+    },
+    "turns": 55,
+    "conversations": 16,
+    "per_turn_accuracy": 0.6909,
+    "full_conversation_accuracy": 0.375,
+    "intent_accuracy": 0.7091,
+    "by_category": {
+      "first_turn": {
+        "n": 13,
+        "correct": 11,
+        "accuracy": 0.8462
+      },
+      "follow_up": {
+        "n": 34,
+        "correct": 19,
+        "accuracy": 0.5588
+      },
+      "correction": {
+        "n": 1,
+        "correct": 1,
+        "accuracy": 1.0
+      },
+      "ambiguous": {
+        "n": 1,
+        "correct": 1,
+        "accuracy": 1.0
+      },
+      "unanswerable": {
+        "n": 6,
+        "correct": 6,
+        "accuracy": 1.0
+      }
+    },
+    "latency_ms": {
+      "p50": 31211.0,
+      "p95": 82210.0,
+      "mean": 40802.5
+    },
+    "tokens_per_turn": {
+      "prompt_mean": 5450.3,
+      "completion_mean": 193.5,
+      "total_mean": 5643.8
+    },
+    "retry_rate": 0.0727,
+    "params": "7.6B",
+    "rationale": "Strongest open coder model in this size class for text-to-SQL. The expected winner, and the one the others have to beat."
+  }
+]

@@ -1,0 +1,52 @@
+id: rainfall-duplicates
+title: Total rainfall, where duplicate readings decide the answer
+tags: [sensor, duplicates, trap, aggregation]
+note: >
+  386 (plot_id, reading_type, recorded_at) keys are duplicated. Sums are
+  affected far more than averages - naive total rainfall is 64,934.7 against a
+  correct 56,020.0, a 14% overcount.
+turns:
+  - user: total rainfall recorded per district
+    category: first_turn
+    expect: answer
+    intent: NEW_TOPIC
+    gold_sql: |
+      WITH clean AS (
+        SELECT DISTINCT ON (s.plot_id, s.recorded_at) s.plot_id, s.value
+        FROM agri.sensor_reading s
+        WHERE s.reading_type = 'rainfall'
+          AND s.value NOT IN (-273, -99, 500, 999.9)
+        ORDER BY s.plot_id, s.recorded_at, s.id
+      )
+      SELECT p.district, sum(c.value) AS total_rainfall_mm
+      FROM clean c
+      JOIN agri.plot p ON p.id = c.plot_id
+      GROUP BY p.district
+
+  - user: just the top three
+    category: follow_up
+    expect: answer
+    intent: REFINE
+    gold_sql: |
+      WITH clean AS (
+        SELECT DISTINCT ON (s.plot_id, s.recorded_at) s.plot_id, s.value
+        FROM agri.sensor_reading s
+        WHERE s.reading_type = 'rainfall'
+          AND s.value NOT IN (-273, -99, 500, 999.9)
+        ORDER BY s.plot_id, s.recorded_at, s.id
+      )
+      SELECT p.district, sum(c.value) AS total_rainfall_mm
+      FROM clean c
+      JOIN agri.plot p ON p.id = c.plot_id
+      GROUP BY p.district
+      ORDER BY total_rainfall_mm DESC
+      LIMIT 3
+
+  - user: how many plots actually have sensors?
+    category: follow_up
+    expect: answer
+    intent: NEW_TOPIC
+    note: 202 of 450 - the coverage caveat behind every sensor average
+    gold_sql: |
+      SELECT count(DISTINCT plot_id) AS instrumented_plots
+      FROM agri.sensor_reading

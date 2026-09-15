@@ -1,0 +1,510 @@
+{
+  "summary": {
+    "model": "mistral-7b-v0.3",
+    "mode": "screen",
+    "started_at": "2026-09-12T19:33:15",
+    "catalog_version": 3,
+    "prompt_versions": {
+      "classify_intent": 2,
+      "generate_sql": 5,
+      "generate_sql_examples": 4,
+      "narrate": 3
+    },
+    "turns": 17,
+    "conversations": 5,
+    "per_turn_accuracy": 0.2353,
+    "full_conversation_accuracy": 0.2,
+    "intent_accuracy": 0.7647,
+    "by_category": {
+      "first_turn": {
+        "n": 3,
+        "correct": 0,
+        "accuracy": 0.0
+      },
+      "follow_up": {
+        "n": 10,
+        "correct": 2,
+        "accuracy": 0.2
+      },
+      "correction": {
+        "n": 1,
+        "correct": 0,
+        "accuracy": 0.0
+      },
+      "ambiguous": {
+        "n": 1,
+        "correct": 0,
+        "accuracy": 0.0
+      },
+      "unanswerable": {
+        "n": 2,
+        "correct": 2,
+        "accuracy": 1.0
+      }
+    },
+    "latency_ms": {
+      "p50": 178928.0,
+      "p95": 420877.0,
+      "mean": 164720.9
+    },
+    "tokens_per_turn": {
+      "prompt_mean": 4987.4,
+      "completion_mean": 322.9,
+      "total_mean": 5310.4
+    },
+    "retry_rate": 0.1176
+  },
+  "turns": [
+    {
+      "conversation": "yield-belgaum-drilldown",
+      "turn": 1,
+      "category": "first_turn",
+      "question": "average yield per hectare in Belgaum for kharif 2025",
+      "expected_action": "answer",
+      "got_action": "refuse",
+      "expected_intent": "NEW_TOPIC",
+      "got_intent": "NEW_TOPIC",
+      "correct": false,
+      "intent_correct": true,
+      "reason": "expected an answer, got refuse: The model did not return a usable answer (model request failed: timed out).",
+      "gold_sql": "SELECT avg(c.actual_yield / p.area_hectares) AS yield_per_ha\nFROM agri.crop_cycle c\nJOIN agri.plot p ON p.id = c.plot_id\nWHERE p.district = 'Belgaum'\n  AND c.season = 'kharif'\n  AND c.sown_date >= DATE '2025-01-01' AND c.sown_date < DATE '2026-01-01'\n  AND c.actual_yield IS NOT NULL\n",
+      "got_sql": null,
+      "attempts": 1,
+      "attempt_detail": [],
+      "answer": "The model did not return a usable answer (model request failed: timed out).",
+      "latency_ms": 180103,
+      "prompt_tokens": 0,
+      "completion_tokens": 0
+    },
+    {
+      "conversation": "yield-belgaum-drilldown",
+      "turn": 2,
+      "category": "follow_up",
+      "question": "what about Dharwad?",
+      "expected_action": "answer",
+      "got_action": "error",
+      "expected_intent": "REFERENCE",
+      "got_intent": "REFERENCE",
+      "correct": false,
+      "intent_correct": true,
+      "reason": "expected an answer, got error: I could not produce a working query for that, even after 3 attempts. The last problem was: SELECT DISTINCT ON expression",
+      "gold_sql": "SELECT avg(c.actual_yield / p.area_hectares) AS yield_per_ha\nFROM agri.crop_cycle c\nJOIN agri.plot p ON p.id = c.plot_id\nWHERE p.district = 'Dharwad'\n  AND c.season = 'kharif'\n  AND c.sown_date >= DATE '2025-01-01' AND c.sown_date < DATE '2026-01-01'\n  AND c.actual_yield IS NOT NULL\n",
+      "got_sql": "WITH clean_sensor_readings AS (\n  SELECT DISTINCT ON (s.plot_id, s.reading_type)\n    s.plot_id,\n    s.recorded_at,\n    s.value\n  FROM sensor_reading AS s\n  WHERE\n    s.reading_type = 'soil_moisture' AND NOT s.value IN (-273, -99, 500, 999.9)\n  ORDER BY\n    s.plot_id,\n    s.recorded_at,\n    s.id\n), harvested_cycles AS (\n  SELECT\n    c.id,\n    c.plot_id,\n    c.crop,\n    c.expected_yield,\n    c.actual_yield,\n    c.harvest_date,\n    c.status\n  FROM crop_cycle AS c\n  WHERE\n    c.actual_yield IS NOT NULL AND c.harvest_date IS NOT NULL\n), filtered_sensor_readings AS (\n  SELECT\n    s.plot_id,\n    s.value\n  FROM clean_sensor_readings AS s\n  WHERE\n    s.plot_id = p.id AND s.recorded_at <= h.harvest_date\n)\nSELECT\n  AVG(h.actual_yield / p.area_hectares / h.expected_yield) AS yield_per_ha,\n  COUNT(*) AS cycles\nFROM harvested_cycles AS h\nJOIN plot AS p\n  ON p.id = h.plot_id\nJOIN filtered_sensor_readings AS s\n  ON TRUE\nGROUP BY\n  h.crop\nLIMIT 1000",
+      "attempts": 3,
+      "attempt_detail": [
+        {
+          "sql": "WITH clean_sensor_readings AS (SELECT DISTINCT ON (s.plot_id, s.reading_type, s.recorded_at) s.plot_id, s.value FROM sensor_reading s WHERE s.reading_type = 'soil_moisture' AND s.value NOT IN (-273, -99, 500, 999.9) ORDER BY s.plot_id, s.reading_type, s.recorded_at, s.id), harvested_cycles AS (SELECT c.id, c.plot_id, c.crop, c.expected_yield, c.actual_yield, c.harvest_date, c.status FROM crop_cycle c WHERE c.actual_yield IS NOT NULL AND c.harvest_date IS NOT NULL) SELECT avg(h.actual_yield / h.plot.area_hectares / h.expected_yield) AS yield_per_ha, count(*) AS cycles FROM harvested_cycles h JOIN plot p ON p.id = h.plot_id JOIN clean_sensor_readings s ON s.plot_id = p.id AND s.recorded_at <= h.harvest_date WHERE p.district = 'Dharwad' GROUP BY h.crop",
+          "verdict": "validation_error",
+          "error_code": "unknown_alias",
+          "error": "'plot' in 'plot.area_hectares' is not a table or alias used in this query."
+        },
+        {
+          "sql": "WITH clean_sensor_readings AS (\n  SELECT DISTINCT ON (s.plot_id, s.reading_type, s.recorded_at)\n    s.plot_id,\n    s.value\n  FROM sensor_reading AS s\n  WHERE\n    s.reading_type = 'soil_moisture' AND NOT s.value IN (-273, -99, 500, 999.9)\n  ORDER BY\n    s.plot_id,\n    s.reading_type,\n    s.recorded_at,\n    s.id\n), harvested_cycles AS (\n  SELECT\n    c.id,\n    c.plot_id,\n    c.crop,\n    c.expected_yield,\n    c.actual_yield,\n    c.harvest_date,\n    c.status\n  FROM crop_cycle AS c\n  WHERE\n    c.actual_yield IS NOT NULL AND c.harvest_date IS NOT NULL\n)\nSELECT\n  AVG(h.actual_yield / p.area_hectares / h.expected_yield) AS yield_per_ha,\n  COUNT(*) AS cycles\nFROM harvested_cycles AS h\nJOIN plot AS p\n  ON p.id = h.plot_id\nJOIN clean_sensor_readings AS s\n  ON s.plot_id = p.id AND s.recorded_at <= h.harvest_date\nWHERE\n  p.district = 'Dharwad'\nGROUP BY\n  h.crop\nLIMIT 1000",
+          "verdict": "execution_error",
+          "error_code": "42703",
+          "error": "column s.recorded_at does not exist"
+        },
+        {
+          "sql": "WITH clean_sensor_readings AS (\n  SELECT DISTINCT ON (s.plot_id, s.reading_type)\n    s.plot_id,\n    s.recorded_at,\n    s.value\n  FROM sensor_reading AS s\n  WHERE\n    s.reading_type = 'soil_moisture' AND NOT s.value IN (-273, -99, 500, 999.9)\n  ORDER BY\n    s.plot_id,\n    s.recorded_at,\n    s.id\n), harvested_cycles AS (\n  SELECT\n    c.id,\n    c.plot_id,\n    c.crop,\n    c.expected_yield,\n    c.actual_yield,\n    c.harvest_date,\n    c.status\n  FROM crop_cycle AS c\n  WHERE\n    c.actual_yield IS NOT NULL AND c.harvest_date IS NOT NULL\n), filtered_sensor_readings AS (\n  SELECT\n    s.plot_id,\n    s.value\n  FROM clean_sensor_readings AS s\n  WHERE\n    s.plot_id = p.id AND s.recorded_at <= h.harvest_date\n)\nSELECT\n  AVG(h.actual_yield / p.area_hectares / h.expected_yield) AS yield_per_ha,\n  COUNT(*) AS cycles\nFROM harvested_cycles AS h\nJOIN plot AS p\n  ON p.id = h.plot_id\nJOIN filtered_sensor_readings AS s\n  ON TRUE\nGROUP BY\n  h.crop\nLIMIT 1000",
+          "verdict": "execution_error",
+          "error_code": "42P10",
+          "error": "SELECT DISTINCT ON expressions must match initial ORDER BY expressions"
+        }
+      ],
+      "answer": "I could not produce a working query for that, even after 3 attempts. The last problem was: SELECT DISTINCT ON expressions must match initial ORDER BY expressions",
+      "latency_ms": 420877,
+      "prompt_tokens": 14594,
+      "completion_tokens": 1156
+    },
+    {
+      "conversation": "yield-belgaum-drilldown",
+      "turn": 3,
+      "category": "follow_up",
+      "question": "now break that down by crop",
+      "expected_action": "answer",
+      "got_action": "refuse",
+      "expected_intent": "REFERENCE",
+      "got_intent": "REFERENCE",
+      "correct": false,
+      "intent_correct": true,
+      "reason": "expected an answer, got refuse: The model did not return a usable answer (model request failed: timed out).",
+      "gold_sql": "SELECT c.crop, avg(c.actual_yield / p.area_hectares) AS yield_per_ha\nFROM agri.crop_cycle c\nJOIN agri.plot p ON p.id = c.plot_id\nWHERE p.district = 'Dharwad'\n  AND c.season = 'kharif'\n  AND c.sown_date >= DATE '2025-01-01' AND c.sown_date < DATE '2026-01-01'\n  AND c.actual_yield IS NOT NULL\nGROUP BY c.crop\n",
+      "got_sql": null,
+      "attempts": 1,
+      "attempt_detail": [],
+      "answer": "The model did not return a usable answer (model request failed: timed out).",
+      "latency_ms": 197465,
+      "prompt_tokens": 458,
+      "completion_tokens": 24
+    },
+    {
+      "conversation": "yield-belgaum-drilldown",
+      "turn": 4,
+      "category": "follow_up",
+      "question": "how many field agents do we have?",
+      "expected_action": "answer",
+      "got_action": "answer",
+      "expected_intent": "NEW_TOPIC",
+      "got_intent": "NEW_TOPIC",
+      "correct": true,
+      "intent_correct": true,
+      "reason": "identical",
+      "gold_sql": "SELECT count(*) AS agent_count FROM agri.field_agent\n",
+      "got_sql": "SELECT\n  COUNT(*) AS agent_count\nFROM field_agent\nLIMIT 1000",
+      "attempts": 1,
+      "attempt_detail": [
+        {
+          "sql": "SELECT\n  COUNT(*) AS agent_count\nFROM field_agent\nLIMIT 1000",
+          "verdict": "ok",
+          "error_code": null,
+          "error": null
+        }
+      ],
+      "answer": "We have 25 field agents in total, as counted by district. This count may not include all field agents if the data is limited to specific districts or time periods.",
+      "latency_ms": 44403,
+      "prompt_tokens": 5231,
+      "completion_tokens": 98
+    },
+    {
+      "conversation": "correction-season",
+      "turn": 1,
+      "category": "first_turn",
+      "question": "average yield per hectare by crop in Mysore for kharif 2025",
+      "expected_action": "answer",
+      "got_action": "error",
+      "expected_intent": "NEW_TOPIC",
+      "got_intent": "NEW_TOPIC",
+      "correct": false,
+      "intent_correct": true,
+      "reason": "expected an answer, got error: I could not produce a working query for that, even after 3 attempts. The last problem was: column c.sown_date does not e",
+      "gold_sql": "SELECT c.crop, avg(c.actual_yield / p.area_hectares) AS yield_per_ha\nFROM agri.crop_cycle c\nJOIN agri.plot p ON p.id = c.plot_id\nWHERE p.district = 'Mysore'\n  AND c.season = 'kharif'\n  AND c.sown_date >= DATE '2025-01-01' AND c.sown_date < DATE '2026-01-01'\n  AND c.actual_yield IS NOT NULL\nGROUP BY c.crop\n",
+      "got_sql": "WITH clean_sensor_readings AS (\n  SELECT DISTINCT ON (s.plot_id, s.recorded_at)\n    s.plot_id,\n    s.value\n  FROM sensor_reading AS s\n  WHERE\n    s.reading_type = 'soil_moisture' AND NOT s.value IN (-273, -99, 500, 999.9)\n  ORDER BY\n    s.plot_id,\n    s.recorded_at,\n    s.id\n), kharif_2025_cycles AS (\n  SELECT\n    c.id,\n    c.plot_id,\n    c.crop,\n    c.expected_yield,\n    c.actual_yield,\n    p.area_hectares\n  FROM crop_cycle AS c\n  JOIN plot AS p\n    ON c.plot_id = p.id\n  WHERE\n    c.season = 'kharif'\n    AND c.sown_date >= CAST('2025-01-01' AS DATE)\n    AND c.sown_date < CAST('2026-01-01' AS DATE)\n    AND c.actual_yield IS NOT NULL\n), yield_per_ha AS (\n  SELECT\n    c.crop,\n    c.plot_id,\n    c.expected_yield,\n    c.actual_yield,\n    c.expected_yield / c.area_hectares AS yield_per_hectare\n  FROM kharif_2025_cycles AS c\n  JOIN clean_sensor_readings AS s\n    ON c.plot_id = s.plot_id AND c.sown_date = s.recorded_at\n), district_filtered_yield_per_ha AS (\n  SELECT\n    y.crop,\n    y.yield_per_hectare\n  FROM yield_per_ha AS y\n  JOIN plot AS p\n    ON y.plot_id = p.id\n  WHERE\n    p.district = 'Mysore'\n)\nSELECT\n  c.crop,\n  ROUND(CAST(AVG(y.yield_per_hectare) AS DECIMAL), 2) AS average_yield_per_hectare\nFROM district_filtered_yield_per_ha AS y\nGROUP BY\n  c.crop\nORDER BY\n  average_yield_per_hectare DESC\nLIMIT 1000",
+      "attempts": 3,
+      "attempt_detail": [
+        {
+          "sql": "WITH clean_sensor_readings AS (\n  SELECT DISTINCT ON (s.plot_id, s.recorded_at)\n    s.plot_id,\n    s.value\n  FROM sensor_reading AS s\n  WHERE\n    s.reading_type = 'soil_moisture' AND NOT s.value IN (-273, -99, 500, 999.9)\n  ORDER BY\n    s.plot_id,\n    s.recorded_at,\n    s.id\n), kharif_2025_cycles AS (\n  SELECT\n    c.id,\n    c.plot_id,\n    c.crop,\n    c.expected_yield,\n    c.actual_yield,\n    p.area_hectares\n  FROM crop_cycle AS c\n  JOIN plot AS p\n    ON c.plot_id = p.id\n  WHERE\n    c.season = 'kharif'\n    AND c.sown_date >= CAST('2025-01-01' AS DATE)\n    AND c.sown_date < CAST('2026-01-01' AS DATE)\n    AND c.actual_yield IS NOT NULL\n), yield_per_ha AS (\n  SELECT\n    c.crop,\n    c.plot_id,\n    c.expected_yield,\n    c.actual_yield,\n    c.expected_yield / c.area_hectares AS yield_per_hectare\n  FROM kharif_2025_cycles AS c\n  JOIN clean_sensor_readings AS s\n    ON c.plot_id = s.plot_id AND c.sown_date = s.recorded_at\n)\nSELECT\n  c.crop,\n  ROUND(CAST(AVG(y.yield_per_hectare) AS DECIMAL), 2) AS average_yield_per_hectare\nFROM yield_per_ha AS y\nJOIN plot AS p\n  ON y.plot_id = p.id\nWHERE\n  p.district = 'Mysore'\nGROUP BY\n  c.crop\nORDER BY\n  average_yield_per_hectare DESC\nLIMIT 1000",
+          "verdict": "execution_error",
+          "error_code": "42703",
+          "error": "column c.sown_date does not exist"
+        },
+        {
+          "sql": "WITH clean_sensor_readings AS (\n  SELECT DISTINCT ON (s.plot_id, s.recorded_at)\n    s.plot_id,\n    s.value\n  FROM sensor_reading AS s\n  WHERE\n    s.reading_type = 'soil_moisture' AND NOT s.value IN (-273, -99, 500, 999.9)\n  ORDER BY\n    s.plot_id,\n    s.recorded_at,\n    s.id\n), kharif_2025_cycles AS (\n  SELECT\n    c.id,\n    c.plot_id,\n    c.crop,\n    c.expected_yield,\n    c.actual_yield,\n    p.area_hectares\n  FROM crop_cycle AS c\n  JOIN plot AS p\n    ON c.plot_id = p.id\n  WHERE\n    c.season = 'kharif'\n    AND c.sown_date >= CAST('2025-01-01' AS DATE)\n    AND c.sown_date < CAST('2026-01-01' AS DATE)\n    AND c.actual_yield IS NOT NULL\n), yield_per_ha AS (\n  SELECT\n    c.crop,\n    c.plot_id,\n    c.expected_yield,\n    c.actual_yield,\n    c.expected_yield / c.area_hectares AS yield_per_hectare\n  FROM kharif_2025_cycles AS c\n  JOIN clean_sensor_readings AS s\n    ON c.plot_id = s.plot_id AND c.sown_date = s.recorded_at\n), district_filtered_yield_per_ha AS (\n  SELECT\n    y.crop,\n    y.yield_per_hectare\n  FROM yield_per_ha AS y\n  JOIN plot AS p\n    ON y.plot_id = p.id\n  WHERE\n    p.district = 'Mysore'\n)\nSELECT\n  c.crop,\n  ROUND(CAST(AVG(y.yield_per_hectare) AS DECIMAL), 2) AS average_yield_per_hectare\nFROM district_filtered_yield_per_ha AS y\nGROUP BY\n  c.crop\nORDER BY\n  average_yield_per_hectare DESC\nLIMIT 1000",
+          "verdict": "execution_error",
+          "error_code": "42703",
+          "error": "column c.sown_date does not exist"
+        },
+        {
+          "sql": "WITH clean_sensor_readings AS (\n  SELECT DISTINCT ON (s.plot_id, s.recorded_at)\n    s.plot_id,\n    s.value\n  FROM sensor_reading AS s\n  WHERE\n    s.reading_type = 'soil_moisture' AND NOT s.value IN (-273, -99, 500, 999.9)\n  ORDER BY\n    s.plot_id,\n    s.recorded_at,\n    s.id\n), kharif_2025_cycles AS (\n  SELECT\n    c.id,\n    c.plot_id,\n    c.crop,\n    c.expected_yield,\n    c.actual_yield,\n    p.area_hectares\n  FROM crop_cycle AS c\n  JOIN plot AS p\n    ON c.plot_id = p.id\n  WHERE\n    c.season = 'kharif'\n    AND c.sown_date >= CAST('2025-01-01' AS DATE)\n    AND c.sown_date < CAST('2026-01-01' AS DATE)\n    AND c.actual_yield IS NOT NULL\n), yield_per_ha AS (\n  SELECT\n    c.crop,\n    c.plot_id,\n    c.expected_yield,\n    c.actual_yield,\n    c.expected_yield / c.area_hectares AS yield_per_hectare\n  FROM kharif_2025_cycles AS c\n  JOIN clean_sensor_readings AS s\n    ON c.plot_id = s.plot_id AND c.sown_date = s.recorded_at\n), district_filtered_yield_per_ha AS (\n  SELECT\n    y.crop,\n    y.yield_per_hectare\n  FROM yield_per_ha AS y\n  JOIN plot AS p\n    ON y.plot_id = p.id\n  WHERE\n    p.district = 'Mysore'\n)\nSELECT\n  c.crop,\n  ROUND(CAST(AVG(y.yield_per_hectare) AS DECIMAL), 2) AS average_yield_per_hectare\nFROM district_filtered_yield_per_ha AS y\nGROUP BY\n  c.crop\nORDER BY\n  average_yield_per_hectare DESC\nLIMIT 1000",
+          "verdict": "execution_error",
+          "error_code": "42703",
+          "error": "column c.sown_date does not exist"
+        }
+      ],
+      "answer": "I could not produce a working query for that, even after 3 attempts. The last problem was: column c.sown_date does not exist",
+      "latency_ms": 454975,
+      "prompt_tokens": 14488,
+      "completion_tokens": 1681
+    },
+    {
+      "conversation": "correction-season",
+      "turn": 2,
+      "category": "correction",
+      "question": "no, I meant rabi, not kharif",
+      "expected_action": "answer",
+      "got_action": "answer",
+      "expected_intent": "CORRECT",
+      "got_intent": "CORRECT",
+      "correct": false,
+      "intent_correct": true,
+      "reason": "row count differs: expected 4, got 5",
+      "gold_sql": "SELECT c.crop, avg(c.actual_yield / p.area_hectares) AS yield_per_ha\nFROM agri.crop_cycle c\nJOIN agri.plot p ON p.id = c.plot_id\nWHERE p.district = 'Mysore'\n  AND c.season = 'rabi'\n  AND c.sown_date >= DATE '2025-01-01' AND c.sown_date < DATE '2026-01-01'\n  AND c.actual_yield IS NOT NULL\nGROUP BY c.crop\n",
+      "got_sql": "SELECT\n  c.crop,\n  AVG(c.actual_yield / p.area_hectares) AS yield_per_ha\nFROM crop_cycle AS c\nJOIN plot AS p\n  ON p.id = c.plot_id\nWHERE\n  p.district = 'Mysore'\n  AND c.season = 'rabi'\n  AND c.actual_yield IS NOT NULL\n  AND p.irrigation_type <> 'rainfed'\nGROUP BY\n  c.crop\nLIMIT 1000",
+      "attempts": 1,
+      "attempt_detail": [
+        {
+          "sql": "SELECT\n  c.crop,\n  AVG(c.actual_yield / p.area_hectares) AS yield_per_ha\nFROM crop_cycle AS c\nJOIN plot AS p\n  ON p.id = c.plot_id\nWHERE\n  p.district = 'Mysore'\n  AND c.season = 'rabi'\n  AND c.actual_yield IS NOT NULL\n  AND p.irrigation_type <> 'rainfed'\nGROUP BY\n  c.crop\nLIMIT 1000",
+          "verdict": "ok",
+          "error_code": null,
+          "error": null
+        }
+      ],
+      "answer": "In the specified district of Mysore, the average yields per hectare for the rabi season are as follows:\n\n- Sunflower: 1126.04 kg/ha\n- Wheat: 3096.09 kg/ha\n- Onion: 16122.88 kg/ha\n- Jowar: 2202.31 kg/ha\n- Chickpea: 1129.88 kg/ha\n\nThese results are based on harvested cycles only, and they are from irrigated plots that are instrumented for data collection. The data presented here covers the first 1000 rows of the results.",
+      "latency_ms": 102303,
+      "prompt_tokens": 5495,
+      "completion_tokens": 330
+    },
+    {
+      "conversation": "correction-season",
+      "turn": 3,
+      "category": "follow_up",
+      "question": "only irrigated plots",
+      "expected_action": "answer",
+      "got_action": "answer",
+      "expected_intent": "REFINE",
+      "got_intent": "REFINE",
+      "correct": false,
+      "intent_correct": true,
+      "reason": "row count differs: expected 3, got 5",
+      "gold_sql": "SELECT c.crop, avg(c.actual_yield / p.area_hectares) AS yield_per_ha\nFROM agri.crop_cycle c\nJOIN agri.plot p ON p.id = c.plot_id\nWHERE p.district = 'Mysore'\n  AND c.season = 'rabi'\n  AND c.sown_date >= DATE '2025-01-01' AND c.sown_date < DATE '2026-01-01'\n  AND c.actual_yield IS NOT NULL\n  AND p.irrigation_type <> 'rainfed'\nGROUP BY c.crop\n",
+      "got_sql": "SELECT\n  c.crop,\n  AVG(c.actual_yield / p.area_hectares) AS yield_per_ha\nFROM crop_cycle AS c\nJOIN plot AS p\n  ON p.id = c.plot_id\nWHERE\n  p.district = 'Mysore'\n  AND c.season = 'rabi'\n  AND c.actual_yield IS NOT NULL\n  AND p.irrigation_type <> 'rainfed'\n  AND p.irrigation_type IS NOT NULL\nGROUP BY\n  c.crop\nLIMIT 1000",
+      "attempts": 1,
+      "attempt_detail": [
+        {
+          "sql": "SELECT\n  c.crop,\n  AVG(c.actual_yield / p.area_hectares) AS yield_per_ha\nFROM crop_cycle AS c\nJOIN plot AS p\n  ON p.id = c.plot_id\nWHERE\n  p.district = 'Mysore'\n  AND c.season = 'rabi'\n  AND c.actual_yield IS NOT NULL\n  AND p.irrigation_type <> 'rainfed'\n  AND p.irrigation_type IS NOT NULL\nGROUP BY\n  c.crop\nLIMIT 1000",
+          "verdict": "ok",
+          "error_code": null,
+          "error": null
+        }
+      ],
+      "answer": "In the Mysore district during the rabi season, the top yielding irrigated crops were as follows:\n\n- Sunflower had an average yield of 1126.04 kg/ha.\n- Wheat had a remarkable yield of 3096.09 kg/ha.\n- Onion had an exceptionally high yield of 16122.88 kg/ha.\n- Jowar had an average yield of 2202.31 kg/ha.\n- Chickpea had an average yield of 1129.88 kg/ha.\n\nThese results are based on the harvested cycles only, and they pertain to the irrigated plots that have been instrumented for data collection. The data is limited to the first 1000 rows. The district column used for filtering is 'Mysore' and the season is 'rabi'.",
+      "latency_ms": 178928,
+      "prompt_tokens": 6113,
+      "completion_tokens": 482
+    },
+    {
+      "conversation": "ambiguous-district",
+      "turn": 1,
+      "category": "ambiguous",
+      "question": "what is the average yield in Belgaum?",
+      "expected_action": "clarify",
+      "got_action": "refuse",
+      "expected_intent": "NEW_TOPIC",
+      "got_intent": "NEW_TOPIC",
+      "correct": false,
+      "intent_correct": true,
+      "reason": "expected clarify, got refuse",
+      "gold_sql": null,
+      "got_sql": null,
+      "attempts": 1,
+      "attempt_detail": [],
+      "answer": "The model did not return a usable answer (model request failed: timed out).",
+      "latency_ms": 180085,
+      "prompt_tokens": 0,
+      "completion_tokens": 0
+    },
+    {
+      "conversation": "ambiguous-district",
+      "turn": 2,
+      "category": "follow_up",
+      "question": "plots located there",
+      "expected_action": "answer",
+      "got_action": "refuse",
+      "expected_intent": "REFINE",
+      "got_intent": "NEW_TOPIC",
+      "correct": false,
+      "intent_correct": false,
+      "reason": "expected an answer, got refuse: The model did not return a usable answer (model request failed: timed out).",
+      "gold_sql": "SELECT avg(c.actual_yield / p.area_hectares) AS yield_per_ha\nFROM agri.crop_cycle c\nJOIN agri.plot p ON p.id = c.plot_id\nWHERE p.district = 'Belgaum'\n  AND c.actual_yield IS NOT NULL\n",
+      "got_sql": null,
+      "attempts": 1,
+      "attempt_detail": [],
+      "answer": "The model did not return a usable answer (model request failed: timed out).",
+      "latency_ms": 199256,
+      "prompt_tokens": 427,
+      "completion_tokens": 23
+    },
+    {
+      "conversation": "ambiguous-district",
+      "turn": 3,
+      "category": "follow_up",
+      "question": "and in Dharwad?",
+      "expected_action": "answer",
+      "got_action": "refuse",
+      "expected_intent": "REFERENCE",
+      "got_intent": "REFERENCE",
+      "correct": false,
+      "intent_correct": true,
+      "reason": "expected an answer, got refuse: The model did not return a usable answer (model request failed: timed out).",
+      "gold_sql": "SELECT avg(c.actual_yield / p.area_hectares) AS yield_per_ha\nFROM agri.crop_cycle c\nJOIN agri.plot p ON p.id = c.plot_id\nWHERE p.district = 'Dharwad'\n  AND c.actual_yield IS NOT NULL\n",
+      "got_sql": null,
+      "attempts": 1,
+      "attempt_detail": [],
+      "answer": "The model did not return a usable answer (model request failed: timed out).",
+      "latency_ms": 199329,
+      "prompt_tokens": 447,
+      "completion_tokens": 26
+    },
+    {
+      "conversation": "ambiguous-district",
+      "turn": 4,
+      "category": "follow_up",
+      "question": "how many of those plots are rainfed?",
+      "expected_action": "answer",
+      "got_action": "answer",
+      "expected_intent": "REFINE",
+      "got_intent": "REFINE",
+      "correct": false,
+      "intent_correct": true,
+      "reason": "row 0 column 0 differs: expected 9, got 91",
+      "gold_sql": "SELECT count(*) AS rainfed_plots\nFROM agri.plot p\nWHERE p.district = 'Dharwad' AND p.irrigation_type = 'rainfed'\n",
+      "got_sql": "SELECT\n  COUNT(*) AS rainfed_count\nFROM plot\nWHERE\n  irrigation_type = 'rainfed'\nLIMIT 1000",
+      "attempts": 1,
+      "attempt_detail": [
+        {
+          "sql": "SELECT\n  COUNT(*) AS rainfed_count\nFROM plot\nWHERE\n  irrigation_type = 'rainfed'\nLIMIT 1000",
+          "verdict": "ok",
+          "error_code": null,
+          "error": null
+        }
+      ],
+      "answer": "There are 91 rainfed plots in the data provided. This count is based on the irrigation type of the plots. The data only includes plots with the irrigation type 'rainfed'.",
+      "latency_ms": 65136,
+      "prompt_tokens": 5330,
+      "completion_tokens": 121
+    },
+    {
+      "conversation": "unanswerable",
+      "turn": 1,
+      "category": "unanswerable",
+      "question": "which farmers have the highest credit score?",
+      "expected_action": "refuse",
+      "got_action": "refuse",
+      "expected_intent": "NEW_TOPIC",
+      "got_intent": "NEW_TOPIC",
+      "correct": true,
+      "intent_correct": true,
+      "reason": "correctly refused",
+      "gold_sql": null,
+      "got_sql": null,
+      "attempts": 1,
+      "attempt_detail": [],
+      "answer": "There is no credit score in this database. It holds farmers, plots, crop cycles, sensor readings, advisories, field agents and field visits - no financial data of any kind.",
+      "latency_ms": 15888,
+      "prompt_tokens": 4381,
+      "completion_tokens": 52
+    },
+    {
+      "conversation": "unanswerable",
+      "turn": 2,
+      "category": "unanswerable",
+      "question": "ok, what about their phone numbers?",
+      "expected_action": "refuse",
+      "got_action": "refuse",
+      "expected_intent": "REFINE",
+      "got_intent": "REFINE",
+      "correct": true,
+      "intent_correct": true,
+      "reason": "correctly refused",
+      "gold_sql": null,
+      "got_sql": null,
+      "attempts": 1,
+      "attempt_detail": [],
+      "answer": "There is no phone number in this database. It holds farmers, plots, crop cycles, sensor readings, advisories, field agents and field visits - no contact information of any kind.",
+      "latency_ms": 37188,
+      "prompt_tokens": 4857,
+      "completion_tokens": 84
+    },
+    {
+      "conversation": "unanswerable",
+      "turn": 3,
+      "category": "follow_up",
+      "question": "fine - how many plots does each of them have in Mandya?",
+      "expected_action": "answer",
+      "got_action": "answer",
+      "expected_intent": "NEW_TOPIC",
+      "got_intent": "REFINE",
+      "correct": true,
+      "intent_correct": false,
+      "reason": "identical",
+      "gold_sql": "SELECT f.name, count(p.id) AS plot_count\nFROM agri.farmer f\nJOIN agri.plot p ON p.farmer_id = f.id\nWHERE p.district = 'Mandya'\nGROUP BY f.name\n",
+      "got_sql": "SELECT\n  f.name,\n  COUNT(*) AS num_plots\nFROM farmer AS f\nJOIN plot AS p\n  ON f.id = p.farmer_id\nWHERE\n  p.district = 'Mandya'\nGROUP BY\n  f.name\nLIMIT 1000",
+      "attempts": 1,
+      "attempt_detail": [
+        {
+          "sql": "SELECT\n  f.name,\n  COUNT(*) AS num_plots\nFROM farmer AS f\nJOIN plot AS p\n  ON f.id = p.farmer_id\nWHERE\n  p.district = 'Mandya'\nGROUP BY\n  f.name\nLIMIT 1000",
+          "verdict": "ok",
+          "error_code": null,
+          "error": null
+        }
+      ],
+      "answer": "The query results show the number of plots each farmer has in Mandya district. For instance, Basavaraj Patil has 3 plots, Prakash Hosamani has 2, and Ningappa Kulkarni has 4. The data is based on the plots in the district of Mandya, as specified in the query.",
+      "latency_ms": 94590,
+      "prompt_tokens": 5634,
+      "completion_tokens": 182
+    },
+    {
+      "conversation": "sensor-sentinels",
+      "turn": 1,
+      "category": "first_turn",
+      "question": "average soil moisture in Dharwad",
+      "expected_action": "answer",
+      "got_action": "answer",
+      "expected_intent": "NEW_TOPIC",
+      "got_intent": "NEW_TOPIC",
+      "correct": false,
+      "intent_correct": true,
+      "reason": "row 0 column 0 differs: expected 32.20666666666666, got 32.25321180555556",
+      "gold_sql": "SELECT avg(s.value) AS avg_soil_moisture\nFROM agri.sensor_reading s\nJOIN agri.plot p ON p.id = s.plot_id\nWHERE p.district = 'Dharwad'\n  AND s.reading_type = 'soil_moisture'\n  AND s.value NOT IN (-273, -99, 500, 999.9)\n",
+      "got_sql": "WITH clean AS (\n  SELECT DISTINCT ON (s.plot_id, s.recorded_at)\n    s.plot_id,\n    s.value\n  FROM sensor_reading AS s\n  WHERE\n    s.reading_type = 'soil_moisture' AND NOT s.value IN (-273, -99, 500, 999.9)\n  ORDER BY\n    s.plot_id,\n    s.recorded_at,\n    s.id\n)\nSELECT\n  AVG(c.value) AS average_soil_moisture\nFROM clean AS c\nJOIN plot AS p\n  ON p.id = c.plot_id\nWHERE\n  p.district = 'Dharwad'\nLIMIT 1000",
+      "attempts": 1,
+      "attempt_detail": [
+        {
+          "sql": "WITH clean AS (\n  SELECT DISTINCT ON (s.plot_id, s.recorded_at)\n    s.plot_id,\n    s.value\n  FROM sensor_reading AS s\n  WHERE\n    s.reading_type = 'soil_moisture' AND NOT s.value IN (-273, -99, 500, 999.9)\n  ORDER BY\n    s.plot_id,\n    s.recorded_at,\n    s.id\n)\nSELECT\n  AVG(c.value) AS average_soil_moisture\nFROM clean AS c\nJOIN plot AS p\n  ON p.id = c.plot_id\nWHERE\n  p.district = 'Dharwad'\nLIMIT 1000",
+          "verdict": "ok",
+          "error_code": null,
+          "error": null
+        }
+      ],
+      "answer": "The average soil moisture in Dharwad, as measured by the instrumented plots, is approximately 32.25%. This result is based on data from 202 out of 450 plots that have sensors installed. The data excludes sentinel error values and only covers the plots located in the district of Dharwad.",
+      "latency_ms": 90712,
+      "prompt_tokens": 4971,
+      "completion_tokens": 283
+    },
+    {
+      "conversation": "sensor-sentinels",
+      "turn": 2,
+      "category": "follow_up",
+      "question": "break it down by soil type",
+      "expected_action": "answer",
+      "got_action": "answer",
+      "expected_intent": "REFERENCE",
+      "got_intent": "REFINE",
+      "correct": false,
+      "intent_correct": false,
+      "reason": "row 0 column 1 differs: expected 36.091443298969075, got 34.34732954545454",
+      "gold_sql": "SELECT p.soil_type, avg(s.value) AS avg_soil_moisture\nFROM agri.sensor_reading s\nJOIN agri.plot p ON p.id = s.plot_id\nWHERE p.district = 'Dharwad'\n  AND s.reading_type = 'soil_moisture'\n  AND s.value NOT IN (-273, -99, 500, 999.9)\nGROUP BY p.soil_type\n",
+      "got_sql": "WITH clean AS (\n  SELECT DISTINCT ON (s.plot_id, s.recorded_at)\n    s.plot_id,\n    s.value\n  FROM sensor_reading AS s\n  WHERE\n    s.reading_type = 'soil_moisture' AND NOT s.value IN (-273, -99, 500, 999.9)\n  ORDER BY\n    s.plot_id,\n    s.recorded_at,\n    s.id\n), soil_types AS (\n  SELECT DISTINCT\n    soil_type\n  FROM plot\n), soil_moisture_by_soil_type AS (\n  SELECT\n    st.soil_type,\n    AVG(c.value) AS average_soil_moisture\n  FROM clean AS c\n  JOIN plot AS p\n    ON p.id = c.plot_id\n  JOIN soil_types AS st\n    ON p.soil_type = st.soil_type\n  GROUP BY\n    st.soil_type\n)\nSELECT\n  st.soil_type,\n  sm.average_soil_moisture\nFROM soil_moisture_by_soil_type AS sm\nJOIN soil_types AS st\n  ON sm.soil_type = st.soil_type\nORDER BY\n  sm.average_soil_moisture\nLIMIT 1000",
+      "attempts": 1,
+      "attempt_detail": [
+        {
+          "sql": "WITH clean AS (\n  SELECT DISTINCT ON (s.plot_id, s.recorded_at)\n    s.plot_id,\n    s.value\n  FROM sensor_reading AS s\n  WHERE\n    s.reading_type = 'soil_moisture' AND NOT s.value IN (-273, -99, 500, 999.9)\n  ORDER BY\n    s.plot_id,\n    s.recorded_at,\n    s.id\n), soil_types AS (\n  SELECT DISTINCT\n    soil_type\n  FROM plot\n), soil_moisture_by_soil_type AS (\n  SELECT\n    st.soil_type,\n    AVG(c.value) AS average_soil_moisture\n  FROM clean AS c\n  JOIN plot AS p\n    ON p.id = c.plot_id\n  JOIN soil_types AS st\n    ON p.soil_type = st.soil_type\n  GROUP BY\n    st.soil_type\n)\nSELECT\n  st.soil_type,\n  sm.average_soil_moisture\nFROM soil_moisture_by_soil_type AS sm\nJOIN soil_types AS st\n  ON sm.soil_type = st.soil_type\nORDER BY\n  sm.average_soil_moisture\nLIMIT 1000",
+          "verdict": "ok",
+          "error_code": null,
+          "error": null
+        }
+      ],
+      "answer": "The query results show the average soil moisture levels for different soil types in your farm. Here are the top 5 soil types with their respective average soil moisture levels:\n\n1. Sandy loam: 33.59%\n2. Alluvial: 34.35%\n3. Red loam: 34.57%\n4. Laterite: 35.53%\n5. Black cotton: 35.97%\n\nThese values represent the average soil moisture levels in the instrumented plots, excluding any sentinel values and duplicates. The data only includes soil moisture readings where the reading type is 'soil_moisture'. Please note that these results are limited to the first 1000 rows of the query results.",
+      "latency_ms": 198809,
+      "prompt_tokens": 6322,
+      "completion_tokens": 565
+    },
+    {
+      "conversation": "sensor-sentinels",
+      "turn": 3,
+      "category": "follow_up",
+      "question": "what about temperature instead?",
+      "expected_action": "answer",
+      "got_action": "answer",
+      "expected_intent": "REFERENCE",
+      "got_intent": "NEW_TOPIC",
+      "correct": false,
+      "intent_correct": false,
+      "reason": "row count differs: expected 5, got 12",
+      "gold_sql": "SELECT p.soil_type, avg(s.value) AS avg_temperature\nFROM agri.sensor_reading s\nJOIN agri.plot p ON p.id = s.plot_id\nWHERE p.district = 'Dharwad'\n  AND s.reading_type = 'temperature'\n  AND s.value NOT IN (-273, -99, 500, 999.9)\nGROUP BY p.soil_type\n",
+      "got_sql": "WITH clean AS (\n  SELECT DISTINCT ON (s.plot_id, s.recorded_at)\n    s.plot_id,\n    s.value\n  FROM sensor_reading AS s\n  WHERE\n    s.reading_type = 'temperature' AND NOT s.value IN (-273, -99, 500, 999.9)\n  ORDER BY\n    s.plot_id,\n    s.recorded_at,\n    s.id\n)\nSELECT\n  p.district,\n  ROUND(CAST(AVG(s.value) AS DECIMAL), 1) AS average_temperature_c\nFROM clean AS s\nJOIN plot AS p\n  ON p.id = s.plot_id\nGROUP BY\n  p.district\nORDER BY\n  average_temperature_c ASC\nLIMIT 1000",
+      "attempts": 1,
+      "attempt_detail": [
+        {
+          "sql": "WITH clean AS (\n  SELECT DISTINCT ON (s.plot_id, s.recorded_at)\n    s.plot_id,\n    s.value\n  FROM sensor_reading AS s\n  WHERE\n    s.reading_type = 'temperature' AND NOT s.value IN (-273, -99, 500, 999.9)\n  ORDER BY\n    s.plot_id,\n    s.recorded_at,\n    s.id\n)\nSELECT\n  p.district,\n  ROUND(CAST(AVG(s.value) AS DECIMAL), 1) AS average_temperature_c\nFROM clean AS s\nJOIN plot AS p\n  ON p.id = s.plot_id\nGROUP BY\n  p.district\nORDER BY\n  average_temperature_c ASC\nLIMIT 1000",
+          "verdict": "ok",
+          "error_code": null,
+          "error": null
+        }
+      ],
+      "answer": "The query results show the average temperature in degrees Celsius for 13 districts in your farm operations. The districts with the lowest average temperatures are Mysore (26.2\u00b0C) and Tumkur (26.3\u00b0C), while the highest average temperature is in Bijapur (28.3\u00b0C). These temperatures are based on readings from instrumented plots, and any readings that were duplicates or had sentinel values were excluded before averaging. The data presented only includes the first 1000 rows of the results.",
+      "latency_ms": 140208,
+      "prompt_tokens": 6038,
+      "completion_tokens": 383
+    }
+  ]
+}

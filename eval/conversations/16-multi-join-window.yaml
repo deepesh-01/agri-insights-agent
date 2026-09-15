@@ -1,0 +1,74 @@
+id: multi-join-window
+title: Ranking within groups across three tables
+tags: [window-function, multi-join, aggregation]
+note: >
+  The brief asks for window functions and multi-table joins. Every path here
+  runs through plot, which is the schema's hub.
+turns:
+  - user: for each district, which crop has the best yield per hectare?
+    category: first_turn
+    expect: answer
+    intent: NEW_TOPIC
+    gold_sql: |
+      WITH per_crop AS (
+        SELECT p.district, c.crop,
+               avg(c.actual_yield / p.area_hectares) AS yield_per_ha,
+               rank() OVER (
+                 PARTITION BY p.district
+                 ORDER BY avg(c.actual_yield / p.area_hectares) DESC
+               ) AS rk
+        FROM agri.crop_cycle c
+        JOIN agri.plot p ON p.id = c.plot_id
+        WHERE c.actual_yield IS NOT NULL
+        GROUP BY p.district, c.crop
+      )
+      SELECT district, crop, yield_per_ha
+      FROM per_crop
+      WHERE rk = 1
+
+  - user: how many farmers grow that crop in each of those districts?
+    category: follow_up
+    expect: answer
+    intent: REFINE
+    gold_sql: |
+      WITH per_crop AS (
+        SELECT p.district, c.crop,
+               avg(c.actual_yield / p.area_hectares) AS yield_per_ha,
+               rank() OVER (
+                 PARTITION BY p.district
+                 ORDER BY avg(c.actual_yield / p.area_hectares) DESC
+               ) AS rk
+        FROM agri.crop_cycle c
+        JOIN agri.plot p ON p.id = c.plot_id
+        WHERE c.actual_yield IS NOT NULL
+        GROUP BY p.district, c.crop
+      ),
+      best AS (SELECT district, crop FROM per_crop WHERE rk = 1)
+      SELECT b.district, b.crop, count(DISTINCT p.farmer_id) AS farmers
+      FROM best b
+      JOIN agri.plot p ON p.district = b.district
+      JOIN agri.crop_cycle c ON c.plot_id = p.id AND c.crop = b.crop
+      GROUP BY b.district, b.crop
+
+  - user: just show me the top three districts by that yield
+    category: follow_up
+    expect: answer
+    intent: REFERENCE
+    gold_sql: |
+      WITH per_crop AS (
+        SELECT p.district, c.crop,
+               avg(c.actual_yield / p.area_hectares) AS yield_per_ha,
+               rank() OVER (
+                 PARTITION BY p.district
+                 ORDER BY avg(c.actual_yield / p.area_hectares) DESC
+               ) AS rk
+        FROM agri.crop_cycle c
+        JOIN agri.plot p ON p.id = c.plot_id
+        WHERE c.actual_yield IS NOT NULL
+        GROUP BY p.district, c.crop
+      )
+      SELECT district, crop, yield_per_ha
+      FROM per_crop
+      WHERE rk = 1
+      ORDER BY yield_per_ha DESC
+      LIMIT 3

@@ -1,0 +1,35 @@
+id: status-codes
+title: The undocumented status codes
+tags: [status, opaque-codes, refusal]
+note: >
+  A, F, H and P have no documented meaning. The agent may filter and group on
+  them but must not invent expansions - inventing "H = harvested" is exactly
+  the confident-wrong-answer failure the brief warns about.
+turns:
+  - user: how many crop cycles are in each status?
+    category: first_turn
+    expect: answer
+    intent: NEW_TOPIC
+    gold_sql: |
+      SELECT status, count(*) AS cycles
+      FROM agri.crop_cycle
+      GROUP BY status
+
+  - user: what does status F mean?
+    category: unanswerable
+    expect: refuse
+    intent: REFINE
+    note: >
+      The meaning is not in the database. The correct move is to say so, not to
+      guess "failed" - though the agent may report what is observable about F
+      rows.
+
+  - user: ok, how many F cycles are there in Bijapur?
+    category: follow_up
+    expect: answer
+    intent: REFINE
+    gold_sql: |
+      SELECT count(*) AS f_cycles
+      FROM agri.crop_cycle c
+      JOIN agri.plot p ON p.id = c.plot_id
+      WHERE c.status = 'F' AND p.district = 'Bijapur'

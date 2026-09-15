@@ -1,0 +1,44 @@
+id: agent-coverage
+title: Agent workload, and what counts as a visit
+tags: [field_visit, outcome-definition, agent, trap]
+note: >
+  field_visit includes cancelled and farmer_absent rows. Counting them as
+  visits overstates every agent's workload, so turn 2 is the real test.
+turns:
+  - user: how many visits did each agent make in 2025?
+    category: first_turn
+    expect: answer
+    intent: NEW_TOPIC
+    note: a visit that happened is outcome IN ('completed','partial')
+    gold_sql: |
+      SELECT a.name, count(*) AS visits
+      FROM agri.field_visit v
+      JOIN agri.field_agent a ON a.id = v.agent_id
+      WHERE v.visited_at >= DATE '2025-01-01' AND v.visited_at < DATE '2026-01-01'
+        AND v.outcome IN ('completed', 'partial')
+      GROUP BY a.name
+
+  - user: include the cancelled ones too
+    category: follow_up
+    expect: answer
+    intent: REFINE
+    note: the user explicitly widens the definition
+    gold_sql: |
+      SELECT a.name, count(*) AS visits
+      FROM agri.field_visit v
+      JOIN agri.field_agent a ON a.id = v.agent_id
+      WHERE v.visited_at >= DATE '2025-01-01' AND v.visited_at < DATE '2026-01-01'
+      GROUP BY a.name
+
+  - user: who had the most farmer_absent visits?
+    category: follow_up
+    expect: answer
+    intent: REFERENCE
+    gold_sql: |
+      SELECT a.name, count(*) AS absent_visits
+      FROM agri.field_visit v
+      JOIN agri.field_agent a ON a.id = v.agent_id
+      WHERE v.visited_at >= DATE '2025-01-01' AND v.visited_at < DATE '2026-01-01'
+        AND v.outcome = 'farmer_absent'
+      GROUP BY a.name
+      ORDER BY absent_visits DESC

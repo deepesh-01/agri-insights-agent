@@ -1,0 +1,344 @@
+[
+  {
+    "model": "qwen2.5-coder-7b",
+    "mode": "screen",
+    "started_at": "2026-09-12T19:08:25",
+    "catalog_version": 3,
+    "prompt_versions": {
+      "classify_intent": 2,
+      "generate_sql": 5,
+      "generate_sql_examples": 4,
+      "narrate": 3
+    },
+    "turns": 17,
+    "conversations": 5,
+    "per_turn_accuracy": 0.8235,
+    "full_conversation_accuracy": 0.8,
+    "intent_accuracy": 0.8235,
+    "by_category": {
+      "first_turn": {
+        "n": 3,
+        "correct": 2,
+        "accuracy": 0.6667
+      },
+      "follow_up": {
+        "n": 10,
+        "correct": 8,
+        "accuracy": 0.8
+      },
+      "correction": {
+        "n": 1,
+        "correct": 1,
+        "accuracy": 1.0
+      },
+      "ambiguous": {
+        "n": 1,
+        "correct": 1,
+        "accuracy": 1.0
+      },
+      "unanswerable": {
+        "n": 2,
+        "correct": 2,
+        "accuracy": 1.0
+      }
+    },
+    "latency_ms": {
+      "p50": 49389.0,
+      "p95": 92911.0,
+      "mean": 52325.5
+    },
+    "tokens_per_turn": {
+      "prompt_mean": 5493.9,
+      "completion_mean": 222.6,
+      "total_mean": 5716.5
+    },
+    "retry_rate": 0.1765,
+    "params": "7.6B",
+    "rationale": "Strongest open coder model in this size class for text-to-SQL. The expected winner, and the one the others have to beat."
+  },
+  {
+    "model": "qwen3-8b",
+    "mode": "screen",
+    "started_at": "2026-09-12T19:23:34",
+    "catalog_version": 3,
+    "prompt_versions": {
+      "classify_intent": 2,
+      "generate_sql": 5,
+      "generate_sql_examples": 4,
+      "narrate": 3
+    },
+    "turns": 17,
+    "conversations": 5,
+    "per_turn_accuracy": 0.1176,
+    "full_conversation_accuracy": 0.0,
+    "intent_accuracy": 0.4118,
+    "by_category": {
+      "first_turn": {
+        "n": 3,
+        "correct": 0,
+        "accuracy": 0.0
+      },
+      "follow_up": {
+        "n": 10,
+        "correct": 0,
+        "accuracy": 0.0
+      },
+      "correction": {
+        "n": 1,
+        "correct": 0,
+        "accuracy": 0.0
+      },
+      "ambiguous": {
+        "n": 1,
+        "correct": 0,
+        "accuracy": 0.0
+      },
+      "unanswerable": {
+        "n": 2,
+        "correct": 2,
+        "accuracy": 1.0
+      }
+    },
+    "latency_ms": {
+      "p50": 16319.0,
+      "p95": 18759.0,
+      "mean": 14500.7
+    },
+    "tokens_per_turn": {
+      "prompt_mean": 0,
+      "completion_mean": 0,
+      "total_mean": 0
+    },
+    "retry_rate": 0.0,
+    "params": "8.2B",
+    "rationale": "Newer generation at the parameter ceiling. Tests whether a general model one generation on beats a coder-tuned model one generation back."
+  },
+  {
+    "model": "llama-3.1-8b",
+    "mode": "screen",
+    "started_at": "2026-09-12T19:28:00",
+    "catalog_version": 3,
+    "prompt_versions": {
+      "classify_intent": 2,
+      "generate_sql": 5,
+      "generate_sql_examples": 4,
+      "narrate": 3
+    },
+    "turns": 17,
+    "conversations": 5,
+    "per_turn_accuracy": 0.1176,
+    "full_conversation_accuracy": 0.0,
+    "intent_accuracy": 0.4118,
+    "by_category": {
+      "first_turn": {
+        "n": 3,
+        "correct": 0,
+        "accuracy": 0.0
+      },
+      "follow_up": {
+        "n": 10,
+        "correct": 0,
+        "accuracy": 0.0
+      },
+      "correction": {
+        "n": 1,
+        "correct": 0,
+        "accuracy": 0.0
+      },
+      "ambiguous": {
+        "n": 1,
+        "correct": 0,
+        "accuracy": 0.0
+      },
+      "unanswerable": {
+        "n": 2,
+        "correct": 2,
+        "accuracy": 1.0
+      }
+    },
+    "latency_ms": {
+      "p50": 17960.0,
+      "p95": 24478.0,
+      "mean": 17779.7
+    },
+    "tokens_per_turn": {
+      "prompt_mean": 0,
+      "completion_mean": 0,
+      "total_mean": 0
+    },
+    "retry_rate": 0.0,
+    "params": "8.0B",
+    "rationale": "The general-purpose reference point. Strong instruction following, no SQL specialisation."
+  },
+  {
+    "model": "mistral-7b-v0.3",
+    "mode": "screen",
+    "started_at": "2026-09-12T19:33:15",
+    "catalog_version": 3,
+    "prompt_versions": {
+      "classify_intent": 2,
+      "generate_sql": 5,
+      "generate_sql_examples": 4,
+      "narrate": 3
+    },
+    "turns": 17,
+    "conversations": 5,
+    "per_turn_accuracy": 0.2353,
+    "full_conversation_accuracy": 0.2,
+    "intent_accuracy": 0.7647,
+    "by_category": {
+      "first_turn": {
+        "n": 3,
+        "correct": 0,
+        "accuracy": 0.0
+      },
+      "follow_up": {
+        "n": 10,
+        "correct": 2,
+        "accuracy": 0.2
+      },
+      "correction": {
+        "n": 1,
+        "correct": 0,
+        "accuracy": 0.0
+      },
+      "ambiguous": {
+        "n": 1,
+        "correct": 0,
+        "accuracy": 0.0
+      },
+      "unanswerable": {
+        "n": 2,
+        "correct": 2,
+        "accuracy": 1.0
+      }
+    },
+    "latency_ms": {
+      "p50": 178928.0,
+      "p95": 420877.0,
+      "mean": 164720.9
+    },
+    "tokens_per_turn": {
+      "prompt_mean": 4987.4,
+      "completion_mean": 322.9,
+      "total_mean": 5310.4
+    },
+    "retry_rate": 0.1176,
+    "params": "7.2B",
+    "rationale": "Older, leaner general model. Establishes how much of the result comes from recent training rather than from the scaffolding."
+  },
+  {
+    "model": "qwen2.5-coder-3b",
+    "mode": "screen",
+    "started_at": "2026-09-12T20:20:04",
+    "catalog_version": 3,
+    "prompt_versions": {
+      "classify_intent": 2,
+      "generate_sql": 5,
+      "generate_sql_examples": 4,
+      "narrate": 3
+    },
+    "turns": 17,
+    "conversations": 5,
+    "per_turn_accuracy": 0.3529,
+    "full_conversation_accuracy": 0.2,
+    "intent_accuracy": 0.5882,
+    "by_category": {
+      "first_turn": {
+        "n": 3,
+        "correct": 2,
+        "accuracy": 0.6667
+      },
+      "follow_up": {
+        "n": 10,
+        "correct": 1,
+        "accuracy": 0.1
+      },
+      "correction": {
+        "n": 1,
+        "correct": 0,
+        "accuracy": 0.0
+      },
+      "ambiguous": {
+        "n": 1,
+        "correct": 1,
+        "accuracy": 1.0
+      },
+      "unanswerable": {
+        "n": 2,
+        "correct": 2,
+        "accuracy": 1.0
+      }
+    },
+    "latency_ms": {
+      "p50": 12651.0,
+      "p95": 24618.0,
+      "mean": 14382.8
+    },
+    "tokens_per_turn": {
+      "prompt_mean": 4410.2,
+      "completion_mean": 113.5,
+      "total_mean": 4523.7
+    },
+    "retry_rate": 0.0,
+    "params": "3.1B",
+    "rationale": "Speed and size floor. Answers the question the brief implies but does not ask: how much does going from 3B to 7B actually buy on this task?"
+  },
+  {
+    "model": "sqlcoder-7b-2",
+    "mode": "screen",
+    "started_at": "2026-09-12T20:24:27",
+    "catalog_version": 3,
+    "prompt_versions": {
+      "classify_intent": 2,
+      "generate_sql": 5,
+      "generate_sql_examples": 4,
+      "narrate": 3
+    },
+    "turns": 17,
+    "conversations": 5,
+    "per_turn_accuracy": 0.1176,
+    "full_conversation_accuracy": 0.0,
+    "intent_accuracy": 0.4118,
+    "by_category": {
+      "first_turn": {
+        "n": 3,
+        "correct": 0,
+        "accuracy": 0.0
+      },
+      "follow_up": {
+        "n": 10,
+        "correct": 0,
+        "accuracy": 0.0
+      },
+      "correction": {
+        "n": 1,
+        "correct": 0,
+        "accuracy": 0.0
+      },
+      "ambiguous": {
+        "n": 1,
+        "correct": 0,
+        "accuracy": 0.0
+      },
+      "unanswerable": {
+        "n": 2,
+        "correct": 2,
+        "accuracy": 1.0
+      }
+    },
+    "latency_ms": {
+      "p50": 10.0,
+      "p95": 27.0,
+      "mean": 14
+    },
+    "tokens_per_turn": {
+      "prompt_mean": 0,
+      "completion_mean": 0,
+      "total_mean": 0
+    },
+    "retry_rate": 0.0,
+    "params": "6.7B",
+    "rationale": "Purpose-built text-to-SQL, but completion-style and weak at multi-turn chat. Included precisely to test the assignment's premise: on a CONVERSATIONAL benchmark, does SQL specialism beat conversational ability? Expected to score well on first turns and poorly on follow-ups."
+  }
+]

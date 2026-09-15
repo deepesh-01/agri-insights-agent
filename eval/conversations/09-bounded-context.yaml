@@ -1,0 +1,53 @@
+id: bounded-context
+title: Context from six turns ago must not leak
+tags: [bounded-context, reset, topic-change]
+note: >
+  The brief's explicit requirement. Turn 1 sets a strong, memorable filter;
+  turns 2-4 move steadily away from it; turn 5 must be answered with no trace
+  of Gulbarga or sugarcane.
+turns:
+  - user: average yield per hectare for sugarcane in Gulbarga
+    category: first_turn
+    expect: answer
+    intent: NEW_TOPIC
+    gold_sql: |
+      SELECT avg(c.actual_yield / p.area_hectares) AS yield_per_ha
+      FROM agri.crop_cycle c
+      JOIN agri.plot p ON p.id = c.plot_id
+      WHERE p.district = 'Gulbarga' AND c.crop = 'sugarcane'
+        AND c.actual_yield IS NOT NULL
+
+  - user: how many field agents joined before 2023?
+    category: follow_up
+    expect: answer
+    intent: NEW_TOPIC
+    gold_sql: |
+      SELECT count(*) AS agents
+      FROM agri.field_agent
+      WHERE joined_on < DATE '2023-01-01'
+
+  - user: how many farmers are inactive?
+    category: follow_up
+    expect: answer
+    intent: NEW_TOPIC
+    gold_sql: |
+      SELECT count(*) AS inactive_farmers
+      FROM agri.farmer
+      WHERE is_active = false
+
+  - user: what soil types do we have?
+    category: follow_up
+    expect: answer
+    intent: NEW_TOPIC
+    gold_sql: |
+      SELECT DISTINCT soil_type FROM agri.plot
+
+  - user: how many plots are there in total?
+    category: follow_up
+    expect: answer
+    intent: NEW_TOPIC
+    note: >
+      Must be all 450 plots. Any filter on Gulbarga or sugarcane surviving from
+      turn 1 is exactly the leak this conversation exists to catch.
+    gold_sql: |
+      SELECT count(*) AS total_plots FROM agri.plot

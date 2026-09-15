@@ -1,0 +1,40 @@
+id: empty-coverage
+title: A period the data does not reach
+tags: [coverage, empty-result, date-filter]
+note: >
+  Sensor readings stop on 2026-04-23 and the clock says September 2026. An
+  empty result here must be explained as the data ending, never reported as
+  "there were none".
+turns:
+  - user: what was the average temperature last month?
+    category: first_turn
+    expect: answer
+    intent: NEW_TOPIC
+    note: correctly returns no rows; the answer must say why
+    gold_sql: |
+      SELECT avg(s.value) AS avg_temperature
+      FROM agri.sensor_reading s
+      WHERE s.reading_type = 'temperature'
+        AND s.value NOT IN (-273, -99, 500, 999.9)
+        AND s.recorded_at >= date_trunc('month', CURRENT_DATE) - INTERVAL '1 month'
+        AND s.recorded_at < date_trunc('month', CURRENT_DATE)
+
+  - user: what is the most recent reading we have?
+    category: follow_up
+    expect: answer
+    intent: REFERENCE
+    gold_sql: |
+      SELECT max(s.recorded_at) AS latest_reading
+      FROM agri.sensor_reading s
+
+  - user: ok, average temperature in March 2026 then
+    category: follow_up
+    expect: answer
+    intent: CORRECT
+    gold_sql: |
+      SELECT avg(s.value) AS avg_temperature
+      FROM agri.sensor_reading s
+      WHERE s.reading_type = 'temperature'
+        AND s.value NOT IN (-273, -99, 500, 999.9)
+        AND s.recorded_at >= DATE '2026-03-01'
+        AND s.recorded_at < DATE '2026-04-01'

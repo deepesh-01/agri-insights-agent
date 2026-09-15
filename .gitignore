@@ -1,0 +1,30 @@
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Node
+node_modules/
+web/dist/
+
+# Model weights -- ~25 GB, fetched with `make model`
+model/gguf/
+
+# Local runtime output
+audit/
+
+# llama-server logs: large, machine-specific, and the evaluation reports
+# already carry the timings that matter.
+eval/reports/*.server.log
+
+# Source workbooks are kept; the zip is a redundant copy of CSV/
+CSV.zip
+
+# OS
+.DS_Store
+
+# The assignment brief is the requesting company's document, not mine to publish
+*.pdf

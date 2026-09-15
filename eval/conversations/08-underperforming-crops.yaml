@@ -1,0 +1,44 @@
+id: underperforming-crops
+title: Performance against expectation - the unit trap
+tags: [yield, units, trap, window-function]
+note: >
+  expected_yield is kg/ha and actual_yield is total kg. Comparing them directly
+  finds 123 underperformers; comparing correctly finds 387. This conversation
+  is the sharpest single test of whether the catalog did its job.
+turns:
+  - user: how many harvested cycles came in below their expected yield?
+    category: first_turn
+    expect: answer
+    intent: NEW_TOPIC
+    gold_sql: |
+      SELECT count(*) AS underperformers
+      FROM agri.crop_cycle c
+      JOIN agri.plot p ON p.id = c.plot_id
+      WHERE c.actual_yield IS NOT NULL
+        AND c.actual_yield / p.area_hectares < c.expected_yield
+
+  - user: which crops are worst?
+    category: follow_up
+    expect: answer
+    intent: REFERENCE
+    gold_sql: |
+      SELECT c.crop,
+             avg(c.actual_yield / p.area_hectares / c.expected_yield) AS pct_of_expected
+      FROM agri.crop_cycle c
+      JOIN agri.plot p ON p.id = c.plot_id
+      WHERE c.actual_yield IS NOT NULL
+      GROUP BY c.crop
+      ORDER BY pct_of_expected ASC
+
+  - user: show me the five worst individual cycles for sugarcane
+    category: follow_up
+    expect: answer
+    intent: REFINE
+    gold_sql: |
+      SELECT c.id,
+             c.actual_yield / p.area_hectares / c.expected_yield AS pct_of_expected
+      FROM agri.crop_cycle c
+      JOIN agri.plot p ON p.id = c.plot_id
+      WHERE c.actual_yield IS NOT NULL AND c.crop = 'sugarcane'
+      ORDER BY pct_of_expected ASC
+      LIMIT 5

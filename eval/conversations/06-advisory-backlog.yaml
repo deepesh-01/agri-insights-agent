@@ -1,0 +1,51 @@
+id: advisory-backlog
+title: Unacknowledged advisories, narrowed by severity then by district
+tags: [advisory, nulls, refinement]
+note: >
+  acknowledged_at IS NULL is the definition of unacknowledged, and 208 of 500
+  rows are NULL. A query that ignores the NULL semantics answers a different
+  question.
+turns:
+  - user: how many advisories have never been acknowledged?
+    category: first_turn
+    expect: answer
+    intent: NEW_TOPIC
+    gold_sql: |
+      SELECT count(*) AS unacknowledged
+      FROM agri.advisory
+      WHERE acknowledged_at IS NULL
+
+  - user: just the critical and urgent ones
+    category: follow_up
+    expect: answer
+    intent: REFINE
+    gold_sql: |
+      SELECT count(*) AS unacknowledged
+      FROM agri.advisory
+      WHERE acknowledged_at IS NULL
+        AND severity IN ('critical', 'urgent')
+
+  - user: which districts do they belong to?
+    category: follow_up
+    expect: answer
+    intent: REFERENCE
+    note: advisories reach a district only through plot
+    gold_sql: |
+      SELECT p.district, count(*) AS unacknowledged
+      FROM agri.advisory a
+      JOIN agri.plot p ON p.id = a.plot_id
+      WHERE a.acknowledged_at IS NULL
+        AND a.severity IN ('critical', 'urgent')
+      GROUP BY p.district
+
+  - user: which category are they mostly about?
+    category: follow_up
+    expect: answer
+    intent: REFERENCE
+    gold_sql: |
+      SELECT a.category, count(*) AS unacknowledged
+      FROM agri.advisory a
+      WHERE a.acknowledged_at IS NULL
+        AND a.severity IN ('critical', 'urgent')
+      GROUP BY a.category
+      ORDER BY unacknowledged DESC

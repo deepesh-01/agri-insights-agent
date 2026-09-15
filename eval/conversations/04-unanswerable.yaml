@@ -1,0 +1,30 @@
+id: unanswerable
+title: Questions the schema cannot answer
+tags: [unanswerable, refusal]
+note: >
+  The brief calls confident wrong answers the worst possible failure mode, so
+  refusal must be clean rather than a hallucinated column. Turn 3 confirms the
+  agent recovers and still answers the next real question.
+turns:
+  - user: which farmers have the highest credit score?
+    category: unanswerable
+    expect: refuse
+    intent: NEW_TOPIC
+    note: no financial data exists anywhere in the schema
+
+  - user: ok, what about their phone numbers?
+    category: unanswerable
+    expect: refuse
+    intent: REFINE
+    note: still unanswerable; farmer holds no contact details
+
+  - user: fine - how many plots does each of them have in Mandya?
+    category: follow_up
+    expect: answer
+    intent: NEW_TOPIC
+    gold_sql: |
+      SELECT f.name, count(p.id) AS plot_count
+      FROM agri.farmer f
+      JOIN agri.plot p ON p.farmer_id = f.id
+      WHERE p.district = 'Mandya'
+      GROUP BY f.name

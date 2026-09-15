@@ -1,0 +1,46 @@
+id: farmer-vs-plot-district
+title: Farmers registered somewhere, plots located somewhere else
+tags: [district, joins, disambiguation]
+note: >
+  Turn 1 is genuinely about farmers, so farmer.district is right. Turn 2 is
+  about land, so plot.district is right. The same word means different columns
+  in consecutive turns.
+turns:
+  - user: how many farmers are registered in Solapur?
+    category: first_turn
+    expect: answer
+    intent: NEW_TOPIC
+    gold_sql: |
+      SELECT count(*) AS farmers
+      FROM agri.farmer
+      WHERE district = 'Solapur'
+
+  - user: and how many plots are located there?
+    category: follow_up
+    expect: answer
+    intent: REFERENCE
+    note: plot.district, not farmer.district - they disagree for 91 of 450 plots
+    gold_sql: |
+      SELECT count(*) AS plots
+      FROM agri.plot
+      WHERE district = 'Solapur'
+
+  - user: how many of those farmers are still active?
+    category: follow_up
+    expect: answer
+    intent: REFERENCE
+    gold_sql: |
+      SELECT count(*) AS active_farmers
+      FROM agri.farmer
+      WHERE district = 'Solapur' AND is_active = true
+
+  - user: what is the total area they farm?
+    category: follow_up
+    expect: answer
+    intent: REFINE
+    note: area belongs to plots owned by Solapur-registered farmers
+    gold_sql: |
+      SELECT sum(p.area_hectares) AS total_hectares
+      FROM agri.plot p
+      JOIN agri.farmer f ON f.id = p.farmer_id
+      WHERE f.district = 'Solapur' AND f.is_active = true

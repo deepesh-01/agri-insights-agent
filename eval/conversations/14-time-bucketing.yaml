@@ -1,0 +1,48 @@
+id: time-bucketing
+title: Monthly trend, then a narrower window
+tags: [time-bucketing, sensor, aggregation]
+note: Time bucketing, which the brief names explicitly among required shapes.
+turns:
+  - user: average soil moisture by month
+    category: first_turn
+    expect: answer
+    intent: NEW_TOPIC
+    gold_sql: |
+      SELECT date_trunc('month', s.recorded_at) AS month,
+             avg(s.value) AS avg_soil_moisture
+      FROM agri.sensor_reading s
+      WHERE s.reading_type = 'soil_moisture'
+        AND s.value NOT IN (-273, -99, 500, 999.9)
+      GROUP BY 1
+      ORDER BY 1
+
+  - user: only for plots in Bellary
+    category: follow_up
+    expect: answer
+    intent: REFINE
+    gold_sql: |
+      SELECT date_trunc('month', s.recorded_at) AS month,
+             avg(s.value) AS avg_soil_moisture
+      FROM agri.sensor_reading s
+      JOIN agri.plot p ON p.id = s.plot_id
+      WHERE s.reading_type = 'soil_moisture'
+        AND s.value NOT IN (-273, -99, 500, 999.9)
+        AND p.district = 'Bellary'
+      GROUP BY 1
+      ORDER BY 1
+
+  - user: which month was driest?
+    category: follow_up
+    expect: answer
+    intent: REFERENCE
+    gold_sql: |
+      SELECT date_trunc('month', s.recorded_at) AS month,
+             avg(s.value) AS avg_soil_moisture
+      FROM agri.sensor_reading s
+      JOIN agri.plot p ON p.id = s.plot_id
+      WHERE s.reading_type = 'soil_moisture'
+        AND s.value NOT IN (-273, -99, 500, 999.9)
+        AND p.district = 'Bellary'
+      GROUP BY 1
+      ORDER BY avg_soil_moisture ASC
+      LIMIT 1

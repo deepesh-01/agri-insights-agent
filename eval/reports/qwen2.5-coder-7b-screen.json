@@ -1,0 +1,532 @@
+{
+  "summary": {
+    "model": "qwen2.5-coder-7b",
+    "mode": "screen",
+    "started_at": "2026-09-12T19:08:25",
+    "catalog_version": 3,
+    "prompt_versions": {
+      "classify_intent": 2,
+      "generate_sql": 5,
+      "generate_sql_examples": 4,
+      "narrate": 3
+    },
+    "turns": 17,
+    "conversations": 5,
+    "per_turn_accuracy": 0.8235,
+    "full_conversation_accuracy": 0.8,
+    "intent_accuracy": 0.8235,
+    "by_category": {
+      "first_turn": {
+        "n": 3,
+        "correct": 2,
+        "accuracy": 0.6667
+      },
+      "follow_up": {
+        "n": 10,
+        "correct": 8,
+        "accuracy": 0.8
+      },
+      "correction": {
+        "n": 1,
+        "correct": 1,
+        "accuracy": 1.0
+      },
+      "ambiguous": {
+        "n": 1,
+        "correct": 1,
+        "accuracy": 1.0
+      },
+      "unanswerable": {
+        "n": 2,
+        "correct": 2,
+        "accuracy": 1.0
+      }
+    },
+    "latency_ms": {
+      "p50": 49389.0,
+      "p95": 92911.0,
+      "mean": 52325.5
+    },
+    "tokens_per_turn": {
+      "prompt_mean": 5493.9,
+      "completion_mean": 222.6,
+      "total_mean": 5716.5
+    },
+    "retry_rate": 0.1765
+  },
+  "turns": [
+    {
+      "conversation": "yield-belgaum-drilldown",
+      "turn": 1,
+      "category": "first_turn",
+      "question": "average yield per hectare in Belgaum for kharif 2025",
+      "expected_action": "answer",
+      "got_action": "answer",
+      "expected_intent": "NEW_TOPIC",
+      "got_intent": "NEW_TOPIC",
+      "correct": true,
+      "intent_correct": true,
+      "reason": "identical",
+      "gold_sql": "SELECT avg(c.actual_yield / p.area_hectares) AS yield_per_ha\nFROM agri.crop_cycle c\nJOIN agri.plot p ON p.id = c.plot_id\nWHERE p.district = 'Belgaum'\n  AND c.season = 'kharif'\n  AND c.sown_date >= DATE '2025-01-01' AND c.sown_date < DATE '2026-01-01'\n  AND c.actual_yield IS NOT NULL\n",
+      "got_sql": "SELECT\n  AVG(c.actual_yield / p.area_hectares) AS avg_yield_per_ha\nFROM crop_cycle AS c\nJOIN plot AS p\n  ON p.id = c.plot_id\nWHERE\n  p.district = 'Belgaum'\n  AND c.season = 'kharif'\n  AND c.sown_date >= CAST('2025-01-01' AS DATE)\n  AND c.sown_date < CAST('2026-01-01' AS DATE)\n  AND c.actual_yield IS NOT NULL\nLIMIT 1000",
+      "attempts": 1,
+      "attempt_detail": [
+        {
+          "sql": "SELECT\n  AVG(c.actual_yield / p.area_hectares) AS avg_yield_per_ha\nFROM crop_cycle AS c\nJOIN plot AS p\n  ON p.id = c.plot_id\nWHERE\n  p.district = 'Belgaum'\n  AND c.season = 'kharif'\n  AND c.sown_date >= CAST('2025-01-01' AS DATE)\n  AND c.sown_date < CAST('2026-01-01' AS DATE)\n  AND c.actual_yield IS NOT NULL\nLIMIT 1000",
+          "verdict": "ok",
+          "error_code": null,
+          "error": null
+        }
+      ],
+      "answer": "The average yield per hectare in Belgaum for kharif 2025 is 18,715.53 kg/ha. This calculation includes only the data from the first 1,000 rows that meet the specified criteria.",
+      "latency_ms": 70866,
+      "prompt_tokens": 4182,
+      "completion_tokens": 187
+    },
+    {
+      "conversation": "yield-belgaum-drilldown",
+      "turn": 2,
+      "category": "follow_up",
+      "question": "what about Dharwad?",
+      "expected_action": "answer",
+      "got_action": "answer",
+      "expected_intent": "REFERENCE",
+      "got_intent": "REFERENCE",
+      "correct": true,
+      "intent_correct": true,
+      "reason": "identical",
+      "gold_sql": "SELECT avg(c.actual_yield / p.area_hectares) AS yield_per_ha\nFROM agri.crop_cycle c\nJOIN agri.plot p ON p.id = c.plot_id\nWHERE p.district = 'Dharwad'\n  AND c.season = 'kharif'\n  AND c.sown_date >= DATE '2025-01-01' AND c.sown_date < DATE '2026-01-01'\n  AND c.actual_yield IS NOT NULL\n",
+      "got_sql": "SELECT\n  AVG(c.actual_yield / p.area_hectares) AS avg_yield_per_ha\nFROM crop_cycle AS c\nJOIN plot AS p\n  ON p.id = c.plot_id\nWHERE\n  p.district = 'Dharwad'\n  AND c.season = 'kharif'\n  AND c.sown_date >= CAST('2025-01-01' AS DATE)\n  AND c.sown_date < CAST('2026-01-01' AS DATE)\n  AND c.actual_yield IS NOT NULL\nLIMIT 1000",
+      "attempts": 2,
+      "attempt_detail": [
+        {
+          "sql": "SELECT AVG(c.actual_yield / p.area_hectares) AS avg_yield_per_ha FROM crop_cycle AS c JOIN plot AS p ON p.id = c.plot_id WHERE p.district = 'Dharwad' AND c.season = 'kharif' AND c.sown_date >= CAST('2025-01-01' AS DATE) AND c.sown_date < CAST('2026-01-01') AND c.actual_yield IS NOT NULL LIMIT 1000",
+          "verdict": "validation_error",
+          "error_code": "parse_error",
+          "error": "SQL did not parse: Expected AS after CAST. Line 1, Col: 256.\n  .season = 'kharif' AND c.sown_date >= CAST('2025-01-01' AS DATE) AND c.sown_date < CAST('2026-01-01'\u001b[4m)\u001b[0m AND c.actual_yield IS NOT NULL LIMIT 1000"
+        },
+        {
+          "sql": "SELECT\n  AVG(c.actual_yield / p.area_hectares) AS avg_yield_per_ha\nFROM crop_cycle AS c\nJOIN plot AS p\n  ON p.id = c.plot_id\nWHERE\n  p.district = 'Dharwad'\n  AND c.season = 'kharif'\n  AND c.sown_date >= CAST('2025-01-01' AS DATE)\n  AND c.sown_date < CAST('2026-01-01' AS DATE)\n  AND c.actual_yield IS NOT NULL\nLIMIT 1000",
+          "verdict": "ok",
+          "error_code": null,
+          "error": null
+        }
+      ],
+      "answer": "The average yield per hectare in Dharwad for the kharif season in 2025 is 9,720.18 kg/ha. This calculation includes only the plots that meet the specified criteria.",
+      "latency_ms": 92911,
+      "prompt_tokens": 9537,
+      "completion_tokens": 455
+    },
+    {
+      "conversation": "yield-belgaum-drilldown",
+      "turn": 3,
+      "category": "follow_up",
+      "question": "now break that down by crop",
+      "expected_action": "answer",
+      "got_action": "answer",
+      "expected_intent": "REFERENCE",
+      "got_intent": "REFERENCE",
+      "correct": true,
+      "intent_correct": true,
+      "reason": "identical",
+      "gold_sql": "SELECT c.crop, avg(c.actual_yield / p.area_hectares) AS yield_per_ha\nFROM agri.crop_cycle c\nJOIN agri.plot p ON p.id = c.plot_id\nWHERE p.district = 'Dharwad'\n  AND c.season = 'kharif'\n  AND c.sown_date >= DATE '2025-01-01' AND c.sown_date < DATE '2026-01-01'\n  AND c.actual_yield IS NOT NULL\nGROUP BY c.crop\n",
+      "got_sql": "SELECT\n  c.crop,\n  AVG(c.actual_yield / p.area_hectares) AS avg_yield_per_ha\nFROM crop_cycle AS c\nJOIN plot AS p\n  ON p.id = c.plot_id\nWHERE\n  p.district = 'Dharwad'\n  AND c.season = 'kharif'\n  AND c.sown_date >= CAST('2025-01-01' AS DATE)\n  AND c.sown_date < CAST('2026-01-01' AS DATE)\n  AND c.actual_yield IS NOT NULL\nGROUP BY\n  c.crop\nLIMIT 1000",
+      "attempts": 2,
+      "attempt_detail": [
+        {
+          "sql": "SELECT c.crop, AVG(c.actual_yield / p.area_hectares) AS avg_yield_per_ha FROM crop_cycle AS c JOIN plot AS p ON p.id = c.plot_id WHERE p.district = 'Dharwad' AND c.season = 'kharif' AND c.sown_date >= CAST('2025-01-01' AS DATE) AND c.sown_date < CAST('2026-01-01') AND c.actual_yield IS NOT NULL GROUP BY c.crop",
+          "verdict": "validation_error",
+          "error_code": "parse_error",
+          "error": "SQL did not parse: Expected AS after CAST. Line 1, Col: 264.\n  .season = 'kharif' AND c.sown_date >= CAST('2025-01-01' AS DATE) AND c.sown_date < CAST('2026-01-01'\u001b[4m)\u001b[0m AND c.actual_yield IS NOT NULL GROUP BY c.crop"
+        },
+        {
+          "sql": "SELECT\n  c.crop,\n  AVG(c.actual_yield / p.area_hectares) AS avg_yield_per_ha\nFROM crop_cycle AS c\nJOIN plot AS p\n  ON p.id = c.plot_id\nWHERE\n  p.district = 'Dharwad'\n  AND c.season = 'kharif'\n  AND c.sown_date >= CAST('2025-01-01' AS DATE)\n  AND c.sown_date < CAST('2026-01-01' AS DATE)\n  AND c.actual_yield IS NOT NULL\nGROUP BY\n  c.crop\nLIMIT 1000",
+          "verdict": "ok",
+          "error_code": null,
+          "error": null
+        }
+      ],
+      "answer": "The average yield per hectare for each crop in the Dharwad district during the kharif season of 2025 is as follows:\n\n- Cotton: 1,876.83 kg/ha\n- Groundnut: 1,603.73 kg/ha\n- Maize: 5,459.18 kg/ha\n- Onion: 15,106.86 kg/ha\n- Paddy: 4,207.10 kg/ha\n- Sugarcane: 59,789.17 kg/ha\n\nThe query only considered harvested cycles and plots in the Dharwad district.",
+      "latency_ms": 118579,
+      "prompt_tokens": 10118,
+      "completion_tokens": 612
+    },
+    {
+      "conversation": "yield-belgaum-drilldown",
+      "turn": 4,
+      "category": "follow_up",
+      "question": "how many field agents do we have?",
+      "expected_action": "answer",
+      "got_action": "answer",
+      "expected_intent": "NEW_TOPIC",
+      "got_intent": "NEW_TOPIC",
+      "correct": true,
+      "intent_correct": true,
+      "reason": "identical",
+      "gold_sql": "SELECT count(*) AS agent_count FROM agri.field_agent\n",
+      "got_sql": "SELECT\n  COUNT(*) AS agent_count\nFROM field_agent\nLIMIT 1000",
+      "attempts": 1,
+      "attempt_detail": [
+        {
+          "sql": "SELECT\n  COUNT(*) AS agent_count\nFROM field_agent\nLIMIT 1000",
+          "verdict": "ok",
+          "error_code": null,
+          "error": null
+        }
+      ],
+      "answer": "We have 25 field agents. The query counted all field agents in the database.",
+      "latency_ms": 24983,
+      "prompt_tokens": 4911,
+      "completion_tokens": 75
+    },
+    {
+      "conversation": "correction-season",
+      "turn": 1,
+      "category": "first_turn",
+      "question": "average yield per hectare by crop in Mysore for kharif 2025",
+      "expected_action": "answer",
+      "got_action": "answer",
+      "expected_intent": "NEW_TOPIC",
+      "got_intent": "NEW_TOPIC",
+      "correct": true,
+      "intent_correct": true,
+      "reason": "identical",
+      "gold_sql": "SELECT c.crop, avg(c.actual_yield / p.area_hectares) AS yield_per_ha\nFROM agri.crop_cycle c\nJOIN agri.plot p ON p.id = c.plot_id\nWHERE p.district = 'Mysore'\n  AND c.season = 'kharif'\n  AND c.sown_date >= DATE '2025-01-01' AND c.sown_date < DATE '2026-01-01'\n  AND c.actual_yield IS NOT NULL\nGROUP BY c.crop\n",
+      "got_sql": "SELECT\n  c.crop,\n  AVG(c.actual_yield / p.area_hectares) AS yield_per_ha\nFROM crop_cycle AS c\nJOIN plot AS p\n  ON p.id = c.plot_id\nWHERE\n  p.district = 'Mysore'\n  AND c.season = 'kharif'\n  AND c.sown_date >= CAST('2025-01-01' AS DATE)\n  AND c.sown_date < CAST('2026-01-01' AS DATE)\n  AND c.actual_yield IS NOT NULL\nGROUP BY\n  c.crop\nLIMIT 1000",
+      "attempts": 1,
+      "attempt_detail": [
+        {
+          "sql": "SELECT\n  c.crop,\n  AVG(c.actual_yield / p.area_hectares) AS yield_per_ha\nFROM crop_cycle AS c\nJOIN plot AS p\n  ON p.id = c.plot_id\nWHERE\n  p.district = 'Mysore'\n  AND c.season = 'kharif'\n  AND c.sown_date >= CAST('2025-01-01' AS DATE)\n  AND c.sown_date < CAST('2026-01-01' AS DATE)\n  AND c.actual_yield IS NOT NULL\nGROUP BY\n  c.crop\nLIMIT 1000",
+          "verdict": "ok",
+          "error_code": null,
+          "error": null
+        }
+      ],
+      "answer": "The average yield per hectare for crops in Mysore during the kharif season of 2025 is as follows:\n\n- Cotton: 1,762.81 kg/ha\n- Groundnut: 1,518.77 kg/ha\n- Paddy: 4,531.66 kg/ha\n- Sugarcane: 78,898.05 kg/ha\n\nThe data is based on the actual yields and areas from the crop cycles in Mysore for the kharif season starting from January 1, 2025, and ending before January 1, 2026.",
+      "latency_ms": 49660,
+      "prompt_tokens": 4272,
+      "completion_tokens": 283
+    },
+    {
+      "conversation": "correction-season",
+      "turn": 2,
+      "category": "correction",
+      "question": "no, I meant rabi, not kharif",
+      "expected_action": "answer",
+      "got_action": "answer",
+      "expected_intent": "CORRECT",
+      "got_intent": "CORRECT",
+      "correct": true,
+      "intent_correct": true,
+      "reason": "identical",
+      "gold_sql": "SELECT c.crop, avg(c.actual_yield / p.area_hectares) AS yield_per_ha\nFROM agri.crop_cycle c\nJOIN agri.plot p ON p.id = c.plot_id\nWHERE p.district = 'Mysore'\n  AND c.season = 'rabi'\n  AND c.sown_date >= DATE '2025-01-01' AND c.sown_date < DATE '2026-01-01'\n  AND c.actual_yield IS NOT NULL\nGROUP BY c.crop\n",
+      "got_sql": "SELECT\n  c.crop,\n  AVG(c.actual_yield / p.area_hectares) AS yield_per_ha\nFROM crop_cycle AS c\nJOIN plot AS p\n  ON p.id = c.plot_id\nWHERE\n  p.district = 'Mysore'\n  AND c.season = 'rabi'\n  AND c.sown_date >= CAST('2025-01-01' AS DATE)\n  AND c.sown_date < CAST('2026-01-01' AS DATE)\n  AND c.actual_yield IS NOT NULL\nGROUP BY\n  c.crop\nLIMIT 1000",
+      "attempts": 1,
+      "attempt_detail": [
+        {
+          "sql": "SELECT\n  c.crop,\n  AVG(c.actual_yield / p.area_hectares) AS yield_per_ha\nFROM crop_cycle AS c\nJOIN plot AS p\n  ON p.id = c.plot_id\nWHERE\n  p.district = 'Mysore'\n  AND c.season = 'rabi'\n  AND c.sown_date >= CAST('2025-01-01' AS DATE)\n  AND c.sown_date < CAST('2026-01-01' AS DATE)\n  AND c.actual_yield IS NOT NULL\nGROUP BY\n  c.crop\nLIMIT 1000",
+          "verdict": "ok",
+          "error_code": null,
+          "error": null
+        }
+      ],
+      "answer": "The query results show the average yield per hectare for different crops in the Rabi season in Mysore district for the year 2025. The crops and their respective yields are:\n\n1. Chickpea: 1,229.24 kg/ha\n2. Jowar: 2,485.09 kg/ha\n3. Sunflower: 1,614.72 kg/ha\n4. Wheat: 3,471.40 kg/ha\n\nThese yields were calculated based on the actual yield data from the crop cycles that were harvested and had instrumented plots.",
+      "latency_ms": 75200,
+      "prompt_tokens": 5297,
+      "completion_tokens": 310
+    },
+    {
+      "conversation": "correction-season",
+      "turn": 3,
+      "category": "follow_up",
+      "question": "only irrigated plots",
+      "expected_action": "answer",
+      "got_action": "answer",
+      "expected_intent": "REFINE",
+      "got_intent": "REFINE",
+      "correct": true,
+      "intent_correct": true,
+      "reason": "identical",
+      "gold_sql": "SELECT c.crop, avg(c.actual_yield / p.area_hectares) AS yield_per_ha\nFROM agri.crop_cycle c\nJOIN agri.plot p ON p.id = c.plot_id\nWHERE p.district = 'Mysore'\n  AND c.season = 'rabi'\n  AND c.sown_date >= DATE '2025-01-01' AND c.sown_date < DATE '2026-01-01'\n  AND c.actual_yield IS NOT NULL\n  AND p.irrigation_type <> 'rainfed'\nGROUP BY c.crop\n",
+      "got_sql": "SELECT\n  c.crop,\n  AVG(c.actual_yield / p.area_hectares) AS yield_per_ha\nFROM crop_cycle AS c\nJOIN plot AS p\n  ON p.id = c.plot_id\nWHERE\n  p.district = 'Mysore'\n  AND c.season = 'rabi'\n  AND c.sown_date >= CAST('2025-01-01' AS DATE)\n  AND c.sown_date < CAST('2026-01-01' AS DATE)\n  AND c.actual_yield IS NOT NULL\n  AND p.irrigation_type <> 'rainfed'\nGROUP BY\n  c.crop\nLIMIT 1000",
+      "attempts": 2,
+      "attempt_detail": [
+        {
+          "sql": "SELECT c.crop, AVG(c.actual_yield / p.area_hectares) AS yield_per_ha FROM crop_cycle AS c JOIN plot AS p ON p.id = c.plot_id WHERE p.district = 'Mysore' AND c.season = 'rabi' AND c.sown_date >= CAST('2025-01-01' AS DATE) AND c.sown_date < CAST('2026-01-01') AND c.actual_yield IS NOT NULL AND p.irrigation_type <> 'rainfed' GROUP BY c.crop LIMIT 1000",
+          "verdict": "validation_error",
+          "error_code": "parse_error",
+          "error": "SQL did not parse: Expected AS after CAST. Line 1, Col: 257.\n   c.season = 'rabi' AND c.sown_date >= CAST('2025-01-01' AS DATE) AND c.sown_date < CAST('2026-01-01'\u001b[4m)\u001b[0m AND c.actual_yield IS NOT NULL AND p.irrigation_type <> 'rainfed' GROUP BY c.crop LIMIT 1000"
+        },
+        {
+          "sql": "SELECT\n  c.crop,\n  AVG(c.actual_yield / p.area_hectares) AS yield_per_ha\nFROM crop_cycle AS c\nJOIN plot AS p\n  ON p.id = c.plot_id\nWHERE\n  p.district = 'Mysore'\n  AND c.season = 'rabi'\n  AND c.sown_date >= CAST('2025-01-01' AS DATE)\n  AND c.sown_date < CAST('2026-01-01' AS DATE)\n  AND c.actual_yield IS NOT NULL\n  AND p.irrigation_type <> 'rainfed'\nGROUP BY\n  c.crop\nLIMIT 1000",
+          "verdict": "ok",
+          "error_code": null,
+          "error": null
+        }
+      ],
+      "answer": "The query results show the average yield per hectare for chickpea, jowar, and wheat in the Mysore district during the rabi season of 2025. The yields are 1229.24 kg/ha for chickpea, 2195.55 kg/ha for jowar, and 3471.40 kg/ha for wheat. The query only includes irrigated plots, excluding those with a rainfed irrigation type.",
+      "latency_ms": 90836,
+      "prompt_tokens": 10104,
+      "completion_tokens": 452
+    },
+    {
+      "conversation": "ambiguous-district",
+      "turn": 1,
+      "category": "ambiguous",
+      "question": "what is the average yield in Belgaum?",
+      "expected_action": "clarify",
+      "got_action": "clarify",
+      "expected_intent": "NEW_TOPIC",
+      "got_intent": "NEW_TOPIC",
+      "correct": true,
+      "intent_correct": true,
+      "reason": "correctly clarifyd",
+      "gold_sql": null,
+      "got_sql": null,
+      "attempts": 1,
+      "attempt_detail": [],
+      "answer": "Do you mean plots located in Belgaum, or farmers registered in Belgaum? They differ for about one plot in five, and the two give noticeably different averages.",
+      "latency_ms": 7343,
+      "prompt_tokens": 3700,
+      "completion_tokens": 50
+    },
+    {
+      "conversation": "ambiguous-district",
+      "turn": 2,
+      "category": "follow_up",
+      "question": "plots located there",
+      "expected_action": "answer",
+      "got_action": "answer",
+      "expected_intent": "REFINE",
+      "got_intent": "REFINE",
+      "correct": true,
+      "intent_correct": true,
+      "reason": "identical",
+      "gold_sql": "SELECT avg(c.actual_yield / p.area_hectares) AS yield_per_ha\nFROM agri.crop_cycle c\nJOIN agri.plot p ON p.id = c.plot_id\nWHERE p.district = 'Belgaum'\n  AND c.actual_yield IS NOT NULL\n",
+      "got_sql": "SELECT\n  AVG(c.actual_yield / p.area_hectares) AS avg_yield_per_ha\nFROM crop_cycle AS c\nJOIN plot AS p\n  ON p.id = c.plot_id\nWHERE\n  p.district = 'Belgaum' AND c.actual_yield IS NOT NULL\nLIMIT 1000",
+      "attempts": 1,
+      "attempt_detail": [
+        {
+          "sql": "SELECT\n  AVG(c.actual_yield / p.area_hectares) AS avg_yield_per_ha\nFROM crop_cycle AS c\nJOIN plot AS p\n  ON p.id = c.plot_id\nWHERE\n  p.district = 'Belgaum' AND c.actual_yield IS NOT NULL\nLIMIT 1000",
+          "verdict": "ok",
+          "error_code": null,
+          "error": null
+        }
+      ],
+      "answer": "The average yield in Belgaum is 8,134.07 kg/ha. This calculation includes only harvested cycles and uses the district column from the plot table.",
+      "latency_ms": 32121,
+      "prompt_tokens": 4618,
+      "completion_tokens": 153
+    },
+    {
+      "conversation": "ambiguous-district",
+      "turn": 3,
+      "category": "follow_up",
+      "question": "and in Dharwad?",
+      "expected_action": "answer",
+      "got_action": "answer",
+      "expected_intent": "REFERENCE",
+      "got_intent": "REFERENCE",
+      "correct": true,
+      "intent_correct": true,
+      "reason": "identical",
+      "gold_sql": "SELECT avg(c.actual_yield / p.area_hectares) AS yield_per_ha\nFROM agri.crop_cycle c\nJOIN agri.plot p ON p.id = c.plot_id\nWHERE p.district = 'Dharwad'\n  AND c.actual_yield IS NOT NULL\n",
+      "got_sql": "SELECT\n  AVG(c.actual_yield / p.area_hectares) AS avg_yield_per_ha\nFROM crop_cycle AS c\nJOIN plot AS p\n  ON p.id = c.plot_id\nWHERE\n  p.district = 'Dharwad' AND c.actual_yield IS NOT NULL\nLIMIT 1000",
+      "attempts": 1,
+      "attempt_detail": [
+        {
+          "sql": "SELECT\n  AVG(c.actual_yield / p.area_hectares) AS avg_yield_per_ha\nFROM crop_cycle AS c\nJOIN plot AS p\n  ON p.id = c.plot_id\nWHERE\n  p.district = 'Dharwad' AND c.actual_yield IS NOT NULL\nLIMIT 1000",
+          "verdict": "ok",
+          "error_code": null,
+          "error": null
+        }
+      ],
+      "answer": "The average yield per hectare in Dharwad is 5452.55 kg/ha. This calculation is based on the actual yields from harvested cycles in instrumented plots within the Dharwad district.",
+      "latency_ms": 49389,
+      "prompt_tokens": 4933,
+      "completion_tokens": 190
+    },
+    {
+      "conversation": "ambiguous-district",
+      "turn": 4,
+      "category": "follow_up",
+      "question": "how many of those plots are rainfed?",
+      "expected_action": "answer",
+      "got_action": "answer",
+      "expected_intent": "REFINE",
+      "got_intent": "REFINE",
+      "correct": true,
+      "intent_correct": true,
+      "reason": "identical",
+      "gold_sql": "SELECT count(*) AS rainfed_plots\nFROM agri.plot p\nWHERE p.district = 'Dharwad' AND p.irrigation_type = 'rainfed'\n",
+      "got_sql": "SELECT\n  COUNT(*) AS rainfed_plots\nFROM plot\nWHERE\n  district = 'Dharwad' AND irrigation_type = 'rainfed'\nLIMIT 1000",
+      "attempts": 1,
+      "attempt_detail": [
+        {
+          "sql": "SELECT\n  COUNT(*) AS rainfed_plots\nFROM plot\nWHERE\n  district = 'Dharwad' AND irrigation_type = 'rainfed'\nLIMIT 1000",
+          "verdict": "ok",
+          "error_code": null,
+          "error": null
+        }
+      ],
+      "answer": "There are 9 rainfed plots in Dharwad.",
+      "latency_ms": 33927,
+      "prompt_tokens": 5025,
+      "completion_tokens": 94
+    },
+    {
+      "conversation": "unanswerable",
+      "turn": 1,
+      "category": "unanswerable",
+      "question": "which farmers have the highest credit score?",
+      "expected_action": "refuse",
+      "got_action": "refuse",
+      "expected_intent": "NEW_TOPIC",
+      "got_intent": "NEW_TOPIC",
+      "correct": true,
+      "intent_correct": true,
+      "reason": "correctly refused",
+      "gold_sql": null,
+      "got_sql": null,
+      "attempts": 1,
+      "attempt_detail": [],
+      "answer": "There is no credit score in this database. It holds farmers, plots, crop cycles, sensor readings, advisories, field agents and field visits - no financial data of any kind.",
+      "latency_ms": 9281,
+      "prompt_tokens": 3698,
+      "completion_tokens": 53
+    },
+    {
+      "conversation": "unanswerable",
+      "turn": 2,
+      "category": "unanswerable",
+      "question": "ok, what about their phone numbers?",
+      "expected_action": "refuse",
+      "got_action": "refuse",
+      "expected_intent": "REFINE",
+      "got_intent": "NEW_TOPIC",
+      "correct": true,
+      "intent_correct": false,
+      "reason": "correctly refused",
+      "gold_sql": null,
+      "got_sql": null,
+      "attempts": 1,
+      "attempt_detail": [],
+      "answer": "There is no phone number information in this database. It holds farmers, plots, crop cycles, sensor readings, advisories, field agents and field visits - no contact information of any kind.",
+      "latency_ms": 18214,
+      "prompt_tokens": 4076,
+      "completion_tokens": 75
+    },
+    {
+      "conversation": "unanswerable",
+      "turn": 3,
+      "category": "follow_up",
+      "question": "fine - how many plots does each of them have in Mandya?",
+      "expected_action": "answer",
+      "got_action": "answer",
+      "expected_intent": "NEW_TOPIC",
+      "got_intent": "NEW_TOPIC",
+      "correct": true,
+      "intent_correct": true,
+      "reason": "identical",
+      "gold_sql": "SELECT f.name, count(p.id) AS plot_count\nFROM agri.farmer f\nJOIN agri.plot p ON p.farmer_id = f.id\nWHERE p.district = 'Mandya'\nGROUP BY f.name\n",
+      "got_sql": "SELECT\n  f.name,\n  COUNT(*) AS plot_count\nFROM farmer AS f\nJOIN plot AS p\n  ON p.farmer_id = f.id\nWHERE\n  p.district = 'Mandya'\nGROUP BY\n  f.name\nORDER BY\n  plot_count DESC\nLIMIT 1000",
+      "attempts": 1,
+      "attempt_detail": [
+        {
+          "sql": "SELECT\n  f.name,\n  COUNT(*) AS plot_count\nFROM farmer AS f\nJOIN plot AS p\n  ON p.farmer_id = f.id\nWHERE\n  p.district = 'Mandya'\nGROUP BY\n  f.name\nORDER BY\n  plot_count DESC\nLIMIT 1000",
+          "verdict": "ok",
+          "error_code": null,
+          "error": null
+        }
+      ],
+      "answer": "Ningappa Kulkarni has the most plots in Mandya with 4 plots. Basavaraj Patil and Prakash Desai each have 3 plots. The other farmers listed have 2 or 1 plot each. The query counted plots based on the farmer's registered district.",
+      "latency_ms": 46083,
+      "prompt_tokens": 4764,
+      "completion_tokens": 155
+    },
+    {
+      "conversation": "sensor-sentinels",
+      "turn": 1,
+      "category": "first_turn",
+      "question": "average soil moisture in Dharwad",
+      "expected_action": "answer",
+      "got_action": "answer",
+      "expected_intent": "NEW_TOPIC",
+      "got_intent": "NEW_TOPIC",
+      "correct": false,
+      "intent_correct": true,
+      "reason": "column count differs: expected 1, got 2",
+      "gold_sql": "SELECT avg(s.value) AS avg_soil_moisture\nFROM agri.sensor_reading s\nJOIN agri.plot p ON p.id = s.plot_id\nWHERE p.district = 'Dharwad'\n  AND s.reading_type = 'soil_moisture'\n  AND s.value NOT IN (-273, -99, 500, 999.9)\n",
+      "got_sql": "SELECT\n  AVG(s.value) AS avg_soil_moisture,\n  COUNT(DISTINCT s.plot_id) AS plots\nFROM sensor_reading AS s\nJOIN plot AS p\n  ON p.id = s.plot_id\nWHERE\n  p.district = 'Dharwad'\n  AND s.reading_type = 'soil_moisture'\n  AND NOT s.value IN (-273, -99, 500, 999.9)\nLIMIT 1000",
+      "attempts": 1,
+      "attempt_detail": [
+        {
+          "sql": "SELECT\n  AVG(s.value) AS avg_soil_moisture,\n  COUNT(DISTINCT s.plot_id) AS plots\nFROM sensor_reading AS s\nJOIN plot AS p\n  ON p.id = s.plot_id\nWHERE\n  p.district = 'Dharwad'\n  AND s.reading_type = 'soil_moisture'\n  AND NOT s.value IN (-273, -99, 500, 999.9)\nLIMIT 1000",
+          "verdict": "ok",
+          "error_code": null,
+          "error": null
+        }
+      ],
+      "answer": "The average soil moisture in Dharwad is 32.21%. This was measured in 24 distinct plots. The query excluded sentinel error values and only considered instrumented plots in the Dharwad district.",
+      "latency_ms": 41000,
+      "prompt_tokens": 4170,
+      "completion_tokens": 185
+    },
+    {
+      "conversation": "sensor-sentinels",
+      "turn": 2,
+      "category": "follow_up",
+      "question": "break it down by soil type",
+      "expected_action": "answer",
+      "got_action": "answer",
+      "expected_intent": "REFERENCE",
+      "got_intent": "REFINE",
+      "correct": false,
+      "intent_correct": false,
+      "reason": "column count differs: expected 2, got 3",
+      "gold_sql": "SELECT p.soil_type, avg(s.value) AS avg_soil_moisture\nFROM agri.sensor_reading s\nJOIN agri.plot p ON p.id = s.plot_id\nWHERE p.district = 'Dharwad'\n  AND s.reading_type = 'soil_moisture'\n  AND s.value NOT IN (-273, -99, 500, 999.9)\nGROUP BY p.soil_type\n",
+      "got_sql": "SELECT\n  p.soil_type,\n  AVG(s.value) AS avg_soil_moisture,\n  COUNT(DISTINCT s.plot_id) AS plots\nFROM sensor_reading AS s\nJOIN plot AS p\n  ON p.id = s.plot_id\nWHERE\n  p.district = 'Dharwad'\n  AND s.reading_type = 'soil_moisture'\n  AND NOT s.value IN (-273, -99, 500, 999.9)\nGROUP BY\n  p.soil_type\nORDER BY\n  avg_soil_moisture DESC\nLIMIT 1000",
+      "attempts": 1,
+      "attempt_detail": [
+        {
+          "sql": "SELECT\n  p.soil_type,\n  AVG(s.value) AS avg_soil_moisture,\n  COUNT(DISTINCT s.plot_id) AS plots\nFROM sensor_reading AS s\nJOIN plot AS p\n  ON p.id = s.plot_id\nWHERE\n  p.district = 'Dharwad'\n  AND s.reading_type = 'soil_moisture'\n  AND NOT s.value IN (-273, -99, 500, 999.9)\nGROUP BY\n  p.soil_type\nORDER BY\n  avg_soil_moisture DESC\nLIMIT 1000",
+          "verdict": "ok",
+          "error_code": null,
+          "error": null
+        }
+      ],
+      "answer": "The query results show the average soil moisture and number of plots for each soil type in the Dharwad district. The soil types with the highest average soil moisture are alluvial, black cotton, laterite, sandy loam, and red loam.",
+      "latency_ms": 78378,
+      "prompt_tokens": 5162,
+      "completion_tokens": 268
+    },
+    {
+      "conversation": "sensor-sentinels",
+      "turn": 3,
+      "category": "follow_up",
+      "question": "what about temperature instead?",
+      "expected_action": "answer",
+      "got_action": "answer",
+      "expected_intent": "REFERENCE",
+      "got_intent": "NEW_TOPIC",
+      "correct": false,
+      "intent_correct": false,
+      "reason": "row count differs: expected 5, got 1",
+      "gold_sql": "SELECT p.soil_type, avg(s.value) AS avg_temperature\nFROM agri.sensor_reading s\nJOIN agri.plot p ON p.id = s.plot_id\nWHERE p.district = 'Dharwad'\n  AND s.reading_type = 'temperature'\n  AND s.value NOT IN (-273, -99, 500, 999.9)\nGROUP BY p.soil_type\n",
+      "got_sql": "SELECT\n  p.district,\n  AVG(s.value) AS avg_temperature\nFROM sensor_reading AS s\nJOIN plot AS p\n  ON p.id = s.plot_id\nWHERE\n  p.district = 'Mysore'\n  AND s.reading_type = 'temperature'\n  AND NOT s.value IN (-273, -99, 500, 999.9)\nGROUP BY\n  p.district\nORDER BY\n  avg_temperature DESC\nLIMIT 1000",
+      "attempts": 1,
+      "attempt_detail": [
+        {
+          "sql": "SELECT\n  p.district,\n  AVG(s.value) AS avg_temperature\nFROM sensor_reading AS s\nJOIN plot AS p\n  ON p.id = s.plot_id\nWHERE\n  p.district = 'Mysore'\n  AND s.reading_type = 'temperature'\n  AND NOT s.value IN (-273, -99, 500, 999.9)\nGROUP BY\n  p.district\nORDER BY\n  avg_temperature DESC\nLIMIT 1000",
+          "verdict": "ok",
+          "error_code": null,
+          "error": null
+        }
+      ],
+      "answer": "The average temperature in the Mysore district is 26.195 degrees Celsius. This calculation excludes sentinel error values and only considers instrumented plots.",
+      "latency_ms": 50762,
+      "prompt_tokens": 4829,
+      "completion_tokens": 187
+    }
+  ]
+}

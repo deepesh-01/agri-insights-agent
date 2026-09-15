@@ -1,0 +1,123 @@
+# Hand-authored knowledge that cannot be introspected from PostgreSQL.
+# Everything else in catalog.yaml is generated from the live database.
+
+version: 5
+
+# Columns that are free prose, not a domain. Never enumerate their values into
+# the prompt: field_visit.notes has only 19 distinct strings in this sample, so
+# the cardinality cap does not catch it, but it is still free text and listing
+# it would teach the model a closed vocabulary that does not exist.
+free_text_columns:
+  - field_visit.notes
+  - farmer.name
+  - field_agent.name
+
+business_rules:
+  - id: yield_units
+    text: >
+      expected_yield is kilograms PER HECTARE; actual_yield is TOTAL kilograms
+      for the plot. To compare them, or to report "yield" as a rate, divide:
+      actual_yield / plot.area_hectares. Comparing the raw columns is wrong and
+      changes the answer materially.
+  - id: sensor_sentinels
+    text: >
+      sensor_reading.value contains sentinel error codes -273, -99, 500 and
+      999.9 written by faulty sensors. Exclude them before ANY aggregation:
+      value NOT IN (-273, -99, 500, 999.9). This applies to every aggregate
+      over sensor_reading without exception, including AVG, SUM, MIN and MAX.
+  - id: sensor_duplicates
+    text: >
+      386 (plot_id, reading_type, recorded_at) keys are duplicated. For sums
+      and counts over sensor_reading, de-duplicate with
+      DISTINCT ON (plot_id, reading_type, recorded_at) inside a CTE, then
+      aggregate the CTE. Averages of clean values are affected only slightly;
+      sums are affected a lot.
+  - id: district_choice
+    text: >
+      plot.district is where the LAND is; farmer.district is where the FARMER
+      registered. They disagree for 91 of 450 plots. Use plot.district for
+      yield, sensor, advisory and visit questions. Use farmer.district only for
+      questions about farmers themselves.
+  - id: sensor_coverage
+    text: >
+      Only 202 of 450 plots have any sensor readings. An average "per plot"
+      over instrumented plots is not the same population as over all plots.
+      Say which one was measured.
+  - id: visit_definition
+    text: >
+      field_visit rows include cancelled and farmer_absent outcomes. A visit
+      that actually happened is outcome IN ('completed','partial'). State which
+      definition was used.
+  - id: reading_type_units
+    text: >
+      Never aggregate across reading_type - soil_moisture is %, temperature is
+      degrees C, humidity is %, rainfall is mm. Always filter to exactly one
+      reading_type with an equality predicate.
+  - id: status_opaque
+    text: >
+      crop_cycle.status values A, F, H, P are undocumented codes. Never invent
+      an expansion for them. Observable fact only: A and P rows always have
+      NULL harvest_date and NULL actual_yield; F and H rows always have both.
+  - id: unharvested_nulls
+    text: >
+      153 crop_cycle rows have NULL actual_yield (not yet harvested). AVG and
+      SUM skip them silently, so any yield figure must state that it covers
+      harvested cycles only.
+  - id: season_year
+    text: >
+      A season year is anchored on sown_date and identified by the season
+      column. "kharif 2025" means exactly:
+      season = 'kharif' AND sown_date >= DATE '2025-01-01'
+      AND sown_date < DATE '2026-01-01'.
+      Never filter a season by sowing MONTHS - the season column already does
+      that, and picking months by hand selects the wrong season. Never anchor a
+      season year on harvest_date - kharif harvests run Sep-Jan and straddle
+      two calendar years.
+
+  - id: irrigated_definition
+    text: >
+      "Irrigated" means plot.irrigation_type <> 'rainfed'.
+
+join_paths:
+  - from: farmer
+    to: plot
+    on: plot.farmer_id = farmer.id
+  - from: plot
+    to: crop_cycle
+    on: crop_cycle.plot_id = plot.id
+  - from: plot
+    to: sensor_reading
+    on: sensor_reading.plot_id = plot.id
+  - from: plot
+    to: advisory
+    on: advisory.plot_id = plot.id
+  - from: plot
+    to: field_visit
+    on: field_visit.plot_id = plot.id
+  - from: field_agent
+    to: field_visit
+    on: field_visit.agent_id = field_agent.id
+notes: >
+  plot is the hub. Every path between two fact tables goes through plot.
+  There is no direct join between crop_cycle, sensor_reading, advisory and
+  field_visit.
+
+ambiguities:
+  - id: district_basis
+    trigger: a district name with no indication of land vs farmer
+    question: >
+      Do you mean plots located in that district, or farmers registered there?
+      They differ for about one plot in five.
+    default: plot.district
+  - id: yield_basis
+    trigger: the word "yield" with no per-hectare qualifier
+    question: >
+      Do you want total harvested kilograms, or yield per hectare?
+    default: per hectare
+  - id: coverage_basis
+    trigger: agent coverage or workload by district
+    question: >
+      By the agent's home district, or by the district of the plots they
+      visited? Agents work outside their home district on about a quarter of
+      visits.
+    default: plot.district

@@ -1,0 +1,451 @@
+id,farmer_id,area_hectares,soil_type,district,irrigation_type
+1,291,1.49,laterite,Gulbarga,canal
+2,272,0.9,red loam,Mandya,drip
+3,266,3.05,red loam,Solapur,sprinkler
+4,147,2,alluvial,Mysore,canal
+5,228,17.84,sandy loam,Belgaum,borewell
+6,282,14.54,red loam,Mysore,rainfed
+7,261,5.17,black cotton,Belgaum,rainfed
+8,284,1.15,black cotton,Bellary,rainfed
+9,204,15.23,black cotton,Belgaum,canal
+10,163,10.13,laterite,Mandya,canal
+11,67,1.86,sandy loam,Belgaum,canal
+12,83,3.38,black cotton,Bijapur,rainfed
+13,101,9.63,black cotton,Mandya,sprinkler
+14,87,13.49,sandy loam,Tumkur,sprinkler
+15,22,13.7,sandy loam,Tumkur,canal
+16,293,3.99,sandy loam,Mandya,drip
+17,126,1.5,red loam,Sangli,drip
+18,213,9.75,sandy loam,Solapur,rainfed
+19,205,1.22,sandy loam,Mysore,drip
+20,127,0.86,red loam,Belgaum,rainfed
+21,296,2.64,alluvial,Bijapur,rainfed
+22,255,5.87,black cotton,Mysore,borewell
+23,145,11.65,black cotton,Belgaum,borewell
+24,221,5.06,black cotton,Raichur,sprinkler
+25,288,11.4,sandy loam,Tumkur,sprinkler
+26,61,5.18,red loam,Dharwad,canal
+27,261,2.16,laterite,Belgaum,drip
+28,77,1.22,alluvial,Bijapur,sprinkler
+29,154,11.88,sandy loam,Sangli,drip
+30,9,13,black cotton,Bellary,sprinkler
+31,243,1.45,black cotton,Bijapur,sprinkler
+32,246,10.56,red loam,Sangli,borewell
+33,294,0.58,alluvial,Mysore,canal
+34,211,16.18,black cotton,Raichur,canal
+35,266,2,alluvial,Bellary,sprinkler
+36,176,14.17,sandy loam,Mandya,sprinkler
+37,248,3.19,sandy loam,Gulbarga,canal
+38,251,5.73,sandy loam,Hassan,borewell
+39,294,1.01,sandy loam,Mysore,borewell
+40,148,13.87,alluvial,Mysore,canal
+41,104,0.83,laterite,Solapur,sprinkler
+42,123,1.47,black cotton,Sangli,drip
+43,170,6.06,red loam,Raichur,drip
+44,244,9.85,black cotton,Solapur,borewell
+45,294,1.58,alluvial,Mysore,canal
+46,19,3.98,black cotton,Belgaum,borewell
+47,153,9.41,laterite,Sangli,sprinkler
+48,253,0.61,sandy loam,Sangli,canal
+49,235,2.06,laterite,Solapur,canal
+50,90,3.62,black cotton,Sangli,drip
+51,49,5.74,red loam,Bijapur,drip
+52,137,6.14,sandy loam,Mandya,canal
+53,32,14.23,sandy loam,Dharwad,borewell
+54,152,5.83,laterite,Belgaum,rainfed
+55,213,1.86,red loam,Solapur,sprinkler
+56,42,1.25,black cotton,Mysore,sprinkler
+57,259,0.64,red loam,Hassan,sprinkler
+58,251,2.22,alluvial,Tumkur,sprinkler
+59,30,3.23,black cotton,Gulbarga,canal
+60,297,0.95,alluvial,Mandya,borewell
+61,147,17.74,alluvial,Mysore,rainfed
+62,196,6.96,laterite,Hassan,canal
+63,179,1.03,black cotton,Tumkur,rainfed
+64,238,1.27,alluvial,Bellary,rainfed
+65,80,7.35,alluvial,Mandya,sprinkler
+66,9,11.36,black cotton,Bellary,canal
+67,23,0.77,red loam,Mysore,sprinkler
+68,149,12.93,sandy loam,Tumkur,canal
+69,155,4.09,black cotton,Gulbarga,sprinkler
+70,90,17.67,alluvial,Sangli,sprinkler
+71,164,8.21,alluvial,Bijapur,canal
+72,116,16.98,alluvial,Gulbarga,drip
+73,286,1.02,alluvial,Bijapur,rainfed
+74,48,10.53,laterite,Hassan,borewell
+75,38,4.24,sandy loam,Solapur,borewell
+76,109,2.47,red loam,Sangli,sprinkler
+77,105,3.29,laterite,Bijapur,rainfed
+78,158,7.18,alluvial,Hassan,rainfed
+79,105,1.06,black cotton,Bijapur,rainfed
+80,284,3.67,red loam,Bellary,drip
+81,292,4.62,alluvial,Mysore,drip
+82,236,11.86,black cotton,Bellary,sprinkler
+83,18,0.52,alluvial,Mysore,canal
+84,119,10.48,laterite,Bijapur,drip
+85,250,2.05,laterite,Tumkur,rainfed
+86,9,1.52,black cotton,Bellary,borewell
+87,269,3.01,black cotton,Gulbarga,rainfed
+88,208,0.79,black cotton,Solapur,borewell
+89,208,1.28,black cotton,Solapur,drip
+90,223,17.69,black cotton,Belgaum,canal
+91,109,1.51,sandy loam,Sangli,sprinkler
+92,289,0.69,laterite,Gulbarga,canal
+93,204,4.26,laterite,Belgaum,rainfed
+94,197,14.69,sandy loam,Mandya,borewell
+95,51,15.23,alluvial,Bellary,rainfed
+96,16,8.74,alluvial,Bellary,drip
+97,96,1.46,black cotton,Hassan,borewell
+98,138,0.65,black cotton,Sangli,rainfed
+99,228,2.53,laterite,Belgaum,sprinkler
+100,263,7.12,sandy loam,Dharwad,drip
+101,7,1.02,laterite,Bellary,sprinkler
+102,87,0.67,black cotton,Tumkur,canal
+103,223,0.88,alluvial,Belgaum,sprinkler
+104,101,10.75,alluvial,Mandya,rainfed
+105,226,1.7,sandy loam,Mysore,rainfed
+106,103,9.83,alluvial,Mandya,sprinkler
+107,125,10.38,red loam,Tumkur,sprinkler
+108,280,0.44,alluvial,Hassan,rainfed
+109,36,11.99,sandy loam,Dharwad,canal
+110,130,6.89,alluvial,Bellary,sprinkler
+111,206,1.88,sandy loam,Sangli,sprinkler
+112,44,1.45,laterite,Gulbarga,drip
+113,170,9.1,laterite,Raichur,sprinkler
+114,298,11.56,laterite,Dharwad,sprinkler
+115,78,0.44,black cotton,Bijapur,canal
+116,179,2.83,black cotton,Hassan,drip
+117,232,5.24,black cotton,Belgaum,canal
+118,125,3.32,red loam,Tumkur,drip
+119,95,1.09,alluvial,Sangli,sprinkler
+120,220,1.53,laterite,Tumkur,borewell
+121,275,2.46,laterite,Mysore,rainfed
+122,199,16.15,red loam,Mandya,rainfed
+123,44,2.95,red loam,Sangli,sprinkler
+124,199,8.23,laterite,Mandya,canal
+125,285,0.62,sandy loam,Raichur,borewell
+126,249,11.94,alluvial,Mandya,drip
+127,228,2.12,black cotton,Belgaum,rainfed
+128,116,3.83,laterite,Gulbarga,sprinkler
+129,58,17.89,black cotton,Raichur,drip
+130,280,5.32,black cotton,Mysore,drip
+131,135,1.71,red loam,Sangli,sprinkler
+132,180,1.38,red loam,Hassan,borewell
+133,292,9.88,sandy loam,Mysore,rainfed
+134,294,1.77,red loam,Mysore,drip
+135,31,1.79,red loam,Solapur,rainfed
+136,127,3.96,alluvial,Bijapur,drip
+137,232,5,alluvial,Bijapur,drip
+138,168,5.39,sandy loam,Solapur,borewell
+139,274,5.3,sandy loam,Tumkur,rainfed
+140,281,10.12,black cotton,Bijapur,borewell
+141,51,1.74,alluvial,Bellary,drip
+142,1,16.91,sandy loam,Solapur,canal
+143,141,0.8,black cotton,Bellary,drip
+144,157,1.61,black cotton,Mandya,canal
+145,245,6.11,sandy loam,Hassan,borewell
+146,217,1.16,black cotton,Bijapur,rainfed
+147,189,0.62,red loam,Dharwad,borewell
+148,272,1.38,red loam,Mandya,drip
+149,227,15.03,alluvial,Hassan,rainfed
+150,220,7.01,laterite,Tumkur,sprinkler
+151,146,5.39,red loam,Raichur,sprinkler
+152,261,0.87,alluvial,Mandya,drip
+153,58,1.42,sandy loam,Raichur,rainfed
+154,68,1.74,alluvial,Bellary,borewell
+155,9,2.86,laterite,Bellary,rainfed
+156,257,13.69,laterite,Bellary,canal
+157,143,15.7,sandy loam,Dharwad,drip
+158,34,1.1,black cotton,Dharwad,drip
+159,60,14.9,red loam,Dharwad,borewell
+160,7,17.44,laterite,Bellary,rainfed
+161,86,1.6,black cotton,Dharwad,rainfed
+162,220,0.5,alluvial,Tumkur,drip
+163,262,4.27,black cotton,Mandya,sprinkler
+164,60,1.21,black cotton,Dharwad,drip
+165,187,16.29,alluvial,Dharwad,canal
+166,165,15.91,sandy loam,Dharwad,borewell
+167,258,0.48,alluvial,Mysore,borewell
+168,239,3.24,black cotton,Dharwad,rainfed
+169,103,4.96,laterite,Mandya,drip
+170,101,5.18,black cotton,Mandya,canal
+171,278,1.74,alluvial,Sangli,rainfed
+172,54,1.07,sandy loam,Gulbarga,borewell
+173,23,4.08,alluvial,Mysore,borewell
+174,298,1.42,alluvial,Gulbarga,canal
+175,122,10.72,sandy loam,Solapur,rainfed
+176,232,15.36,black cotton,Belgaum,canal
+177,55,0.9,alluvial,Tumkur,rainfed
+178,238,14.23,laterite,Bellary,borewell
+179,111,2.36,alluvial,Tumkur,sprinkler
+180,26,5.96,alluvial,Tumkur,sprinkler
+181,282,1.14,black cotton,Mysore,canal
+182,67,13.74,laterite,Mandya,rainfed
+183,39,0.72,sandy loam,Dharwad,borewell
+184,22,11.2,alluvial,Tumkur,drip
+185,16,3.42,sandy loam,Bellary,drip
+186,77,11.99,alluvial,Solapur,borewell
+187,45,16.62,red loam,Hassan,sprinkler
+188,10,3.44,sandy loam,Raichur,sprinkler
+189,258,0.83,sandy loam,Mysore,borewell
+190,242,1.63,red loam,Bellary,canal
+191,137,1.67,laterite,Mandya,drip
+192,182,2.69,sandy loam,Hassan,sprinkler
+193,15,0.96,alluvial,Bellary,sprinkler
+194,159,8.63,alluvial,Belgaum,borewell
+195,170,2.52,black cotton,Raichur,borewell
+196,76,5.1,black cotton,Tumkur,rainfed
+197,203,17.71,alluvial,Bijapur,drip
+198,163,1.51,laterite,Hassan,canal
+199,194,14.75,laterite,Bijapur,drip
+200,291,13.34,laterite,Solapur,borewell
+201,255,0.78,sandy loam,Dharwad,drip
+202,6,0.8,black cotton,Gulbarga,borewell
+203,198,2.67,sandy loam,Solapur,sprinkler
+204,193,1.66,red loam,Tumkur,drip
+205,38,0.45,black cotton,Dharwad,rainfed
+206,88,0.66,sandy loam,Bijapur,sprinkler
+207,248,4.61,red loam,Bellary,borewell
+208,52,12.65,laterite,Dharwad,rainfed
+209,145,3.57,red loam,Belgaum,borewell
+210,185,0.87,black cotton,Dharwad,borewell
+211,106,3.89,alluvial,Bellary,drip
+212,136,1.02,alluvial,Hassan,borewell
+213,135,0.82,black cotton,Sangli,borewell
+214,177,1.06,alluvial,Raichur,sprinkler
+215,215,1.5,alluvial,Solapur,rainfed
+216,41,12.85,laterite,Dharwad,sprinkler
+217,76,0.68,red loam,Mandya,borewell
+218,217,13.53,sandy loam,Sangli,rainfed
+219,35,3.3,black cotton,Hassan,sprinkler
+220,268,12.8,black cotton,Solapur,borewell
+221,289,5.47,sandy loam,Gulbarga,drip
+222,249,10.84,laterite,Dharwad,drip
+223,20,4.76,sandy loam,Mysore,rainfed
+224,11,16.11,black cotton,Solapur,canal
+225,69,9.85,alluvial,Bellary,sprinkler
+226,46,11.81,sandy loam,Gulbarga,borewell
+227,264,10.84,laterite,Hassan,borewell
+228,89,3,red loam,Gulbarga,rainfed
+229,189,1.21,red loam,Dharwad,rainfed
+230,251,5.48,sandy loam,Hassan,canal
+231,133,1.5,laterite,Mysore,canal
+232,114,1.48,black cotton,Solapur,drip
+233,68,2.03,sandy loam,Bellary,drip
+234,193,9.63,laterite,Belgaum,drip
+235,300,16.07,laterite,Hassan,sprinkler
+236,145,17.86,sandy loam,Belgaum,rainfed
+237,134,8.26,red loam,Mandya,borewell
+238,207,4.89,sandy loam,Mandya,drip
+239,208,0.46,sandy loam,Solapur,canal
+240,274,5.76,red loam,Tumkur,sprinkler
+241,93,14.7,red loam,Dharwad,rainfed
+242,46,5.49,sandy loam,Mandya,rainfed
+243,300,16.4,laterite,Belgaum,sprinkler
+244,37,14.17,sandy loam,Sangli,drip
+245,28,10.11,alluvial,Mandya,canal
+246,162,0.69,sandy loam,Sangli,borewell
+247,3,0.74,alluvial,Gulbarga,borewell
+248,67,3.61,black cotton,Belgaum,borewell
+249,274,15.08,red loam,Bellary,borewell
+250,3,0.8,black cotton,Gulbarga,drip
+251,258,5.3,alluvial,Mysore,sprinkler
+252,269,5.98,sandy loam,Tumkur,canal
+253,85,8.74,red loam,Mysore,canal
+254,12,0.67,alluvial,Raichur,rainfed
+255,274,1.35,black cotton,Tumkur,borewell
+256,214,0.6,black cotton,Mandya,rainfed
+257,216,1.46,alluvial,Dharwad,borewell
+258,262,0.59,laterite,Mandya,canal
+259,135,1.96,black cotton,Sangli,sprinkler
+260,255,1.5,black cotton,Solapur,borewell
+261,294,12.14,black cotton,Mysore,rainfed
+262,119,1.96,black cotton,Tumkur,rainfed
+263,185,0.9,black cotton,Tumkur,canal
+264,88,9.22,black cotton,Bijapur,rainfed
+265,176,16.03,alluvial,Mysore,drip
+266,86,7.24,alluvial,Belgaum,sprinkler
+267,225,16.35,red loam,Mysore,drip
+268,250,1.11,laterite,Mysore,sprinkler
+269,290,12.23,laterite,Tumkur,borewell
+270,222,3.38,red loam,Mysore,sprinkler
+271,28,1.21,black cotton,Bijapur,drip
+272,165,8.67,alluvial,Dharwad,drip
+273,121,3.79,sandy loam,Tumkur,borewell
+274,255,6.43,black cotton,Solapur,borewell
+275,156,4.62,sandy loam,Mandya,borewell
+276,115,13.2,sandy loam,Raichur,drip
+277,59,3.37,laterite,Sangli,sprinkler
+278,192,7.69,alluvial,Mandya,borewell
+279,131,5.72,red loam,Mysore,rainfed
+280,56,0.47,alluvial,Raichur,drip
+281,259,4.94,laterite,Tumkur,drip
+282,261,1.86,black cotton,Belgaum,drip
+283,165,1.02,sandy loam,Dharwad,drip
+284,176,10.95,laterite,Mandya,rainfed
+285,281,1.54,red loam,Bijapur,sprinkler
+286,149,1.87,laterite,Tumkur,sprinkler
+287,166,12.99,alluvial,Bijapur,sprinkler
+288,147,2.05,red loam,Mysore,borewell
+289,29,1.97,sandy loam,Bijapur,canal
+290,278,0.56,laterite,Mandya,drip
+291,122,1.67,alluvial,Solapur,drip
+292,214,1.96,sandy loam,Mandya,canal
+293,227,13.77,laterite,Hassan,sprinkler
+294,101,8.13,black cotton,Mandya,canal
+295,89,2.16,red loam,Mandya,canal
+296,300,0.41,red loam,Belgaum,rainfed
+297,27,9.61,laterite,Raichur,rainfed
+298,38,0.91,laterite,Dharwad,canal
+299,213,16.6,sandy loam,Solapur,rainfed
+300,185,11.7,black cotton,Tumkur,borewell
+301,178,1.85,sandy loam,Gulbarga,drip
+302,59,3.13,laterite,Bijapur,sprinkler
+303,229,0.87,black cotton,Hassan,canal
+304,276,1.4,alluvial,Mandya,borewell
+305,106,15.3,black cotton,Gulbarga,canal
+306,13,2.35,laterite,Gulbarga,borewell
+307,295,3.63,alluvial,Bellary,rainfed
+308,9,0.59,laterite,Bellary,borewell
+309,38,14.23,black cotton,Dharwad,rainfed
+310,225,1.72,red loam,Sangli,drip
+311,280,16.64,sandy loam,Mandya,borewell
+312,284,2.17,laterite,Bellary,sprinkler
+313,44,5.61,laterite,Sangli,canal
+314,83,8.18,black cotton,Solapur,sprinkler
+315,237,0.52,laterite,Mysore,drip
+316,170,1.47,red loam,Raichur,rainfed
+317,249,13.01,laterite,Dharwad,rainfed
+318,162,15.43,alluvial,Sangli,rainfed
+319,185,3.85,alluvial,Bellary,sprinkler
+320,56,15.92,red loam,Solapur,rainfed
+321,40,13.58,laterite,Tumkur,drip
+322,109,4.17,red loam,Sangli,rainfed
+323,201,4.93,laterite,Dharwad,sprinkler
+324,47,16.18,red loam,Dharwad,sprinkler
+325,72,0.69,alluvial,Bellary,rainfed
+326,21,8.81,red loam,Mandya,sprinkler
+327,185,6.48,sandy loam,Tumkur,borewell
+328,267,12.94,red loam,Mandya,drip
+329,194,5.34,red loam,Bijapur,sprinkler
+330,208,11.79,black cotton,Solapur,sprinkler
+331,72,0.77,red loam,Bellary,canal
+332,186,4.64,black cotton,Mandya,drip
+333,246,1.35,black cotton,Dharwad,canal
+334,294,0.62,black cotton,Mysore,canal
+335,133,17.63,black cotton,Mysore,rainfed
+336,44,5.47,laterite,Hassan,canal
+337,299,9.17,sandy loam,Bijapur,drip
+338,36,8.43,alluvial,Dharwad,canal
+339,50,1.36,black cotton,Solapur,drip
+340,67,17.25,alluvial,Belgaum,sprinkler
+341,216,4.12,alluvial,Dharwad,rainfed
+342,295,0.81,sandy loam,Bijapur,sprinkler
+343,279,15.47,laterite,Belgaum,borewell
+344,267,0.73,red loam,Sangli,drip
+345,300,3.69,alluvial,Belgaum,canal
+346,212,2.71,sandy loam,Tumkur,rainfed
+347,296,16.26,black cotton,Bijapur,canal
+348,229,2.4,laterite,Hassan,sprinkler
+349,27,7.74,alluvial,Sangli,borewell
+350,33,4.44,laterite,Belgaum,sprinkler
+351,147,15.84,alluvial,Mysore,drip
+352,6,8.34,laterite,Sangli,sprinkler
+353,119,1.48,black cotton,Tumkur,rainfed
+354,205,12.21,black cotton,Bijapur,borewell
+355,282,5.66,red loam,Mysore,sprinkler
+356,100,8.1,black cotton,Mysore,sprinkler
+357,38,2.47,laterite,Dharwad,sprinkler
+358,129,4.25,alluvial,Mandya,drip
+359,15,0.81,red loam,Bellary,rainfed
+360,212,1.23,sandy loam,Tumkur,borewell
+361,205,2.3,sandy loam,Bijapur,rainfed
+362,112,0.83,alluvial,Mysore,canal
+363,121,1.8,laterite,Belgaum,rainfed
+364,80,2.31,laterite,Mandya,borewell
+365,278,9.79,sandy loam,Sangli,drip
+366,94,8.67,red loam,Gulbarga,borewell
+367,270,4.16,red loam,Raichur,drip
+368,62,1.14,alluvial,Belgaum,sprinkler
+369,52,1.38,sandy loam,Dharwad,drip
+370,176,2.84,sandy loam,Mandya,drip
+371,144,1.31,sandy loam,Dharwad,canal
+372,285,1.01,alluvial,Solapur,borewell
+373,91,13.57,sandy loam,Solapur,drip
+374,154,1.77,black cotton,Sangli,canal
+375,131,3.8,sandy loam,Mysore,sprinkler
+376,286,7.45,laterite,Bijapur,canal
+377,296,2.7,sandy loam,Bijapur,sprinkler
+378,250,2.31,red loam,Sangli,canal
+379,173,1.38,red loam,Mysore,rainfed
+380,117,4.84,sandy loam,Belgaum,drip
+381,186,1.23,red loam,Mandya,canal
+382,129,1.52,black cotton,Mandya,borewell
+383,243,0.44,black cotton,Bijapur,rainfed
+384,80,9.41,red loam,Mysore,canal
+385,270,4.65,alluvial,Raichur,drip
+386,277,17.38,red loam,Belgaum,sprinkler
+387,234,12.28,laterite,Bijapur,rainfed
+388,178,2.36,sandy loam,Gulbarga,canal
+389,156,5.39,laterite,Hassan,borewell
+390,252,2.04,laterite,Bellary,canal
+391,4,0.7,red loam,Tumkur,drip
+392,194,12.2,sandy loam,Bijapur,rainfed
+393,273,5.41,black cotton,Gulbarga,drip
+394,232,1.4,laterite,Belgaum,borewell
+395,96,0.85,red loam,Hassan,borewell
+396,78,3.25,alluvial,Raichur,borewell
+397,170,5.1,red loam,Bijapur,canal
+398,129,1.73,alluvial,Mandya,drip
+399,127,15.25,red loam,Bijapur,drip
+400,200,0.9,laterite,Belgaum,sprinkler
+401,63,16.65,red loam,Tumkur,borewell
+402,121,0.92,alluvial,Belgaum,canal
+403,5,1.33,sandy loam,Belgaum,borewell
+404,128,17.64,black cotton,Bijapur,borewell
+405,183,1.52,sandy loam,Raichur,sprinkler
+406,178,2.77,red loam,Gulbarga,rainfed
+407,21,1.1,laterite,Tumkur,canal
+408,279,15.98,red loam,Belgaum,borewell
+409,272,11.45,laterite,Raichur,drip
+410,95,3.46,black cotton,Belgaum,sprinkler
+411,199,4.21,alluvial,Sangli,rainfed
+412,57,0.51,red loam,Sangli,borewell
+413,249,13.9,laterite,Belgaum,sprinkler
+414,132,1.37,alluvial,Raichur,borewell
+415,240,4.23,sandy loam,Raichur,borewell
+416,137,1.57,laterite,Mandya,borewell
+417,52,1.25,laterite,Dharwad,canal
+418,286,2.42,alluvial,Bijapur,drip
+419,54,13.89,laterite,Bijapur,drip
+420,181,5.99,alluvial,Raichur,rainfed
+421,124,5.06,sandy loam,Raichur,drip
+422,230,0.4,laterite,Bellary,canal
+423,155,15.26,sandy loam,Raichur,sprinkler
+424,262,2.62,red loam,Mandya,canal
+425,136,1.33,laterite,Bijapur,drip
+426,292,1.57,alluvial,Mysore,sprinkler
+427,49,0.88,black cotton,Hassan,rainfed
+428,179,1.09,laterite,Hassan,borewell
+429,196,7.79,red loam,Tumkur,canal
+430,26,15.03,laterite,Tumkur,borewell
+431,114,2.59,laterite,Solapur,borewell
+432,281,0.54,red loam,Bijapur,drip
+433,287,13.39,laterite,Mysore,canal
+434,125,7.08,alluvial,Mysore,drip
+435,188,4.38,red loam,Mysore,rainfed
+436,227,8.8,sandy loam,Hassan,canal
+437,44,4.48,black cotton,Belgaum,rainfed
+438,57,1.15,red loam,Raichur,sprinkler
+439,268,17.91,black cotton,Solapur,drip
+440,299,1.24,laterite,Bijapur,rainfed
+441,28,13.92,sandy loam,Mandya,borewell
+442,10,17.76,black cotton,Raichur,rainfed
+443,249,2.75,laterite,Dharwad,borewell
+444,21,1.25,black cotton,Tumkur,rainfed
+445,181,5.98,black cotton,Raichur,rainfed
+446,199,2.12,red loam,Mandya,canal
+447,175,10.59,laterite,Solapur,canal
+448,214,5.88,alluvial,Mandya,sprinkler
+449,68,1.33,sandy loam,Bijapur,sprinkler
+450,70,13.87,red loam,Mysore,rainfed

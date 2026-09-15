@@ -1,0 +1,59 @@
+id: yield-belgaum-drilldown
+title: Yield in Belgaum, then Dharwad, then broken down by crop
+tags: [yield, district, reference-resolution, per-hectare]
+note: >
+  The brief's own worked example. Turn 2 and turn 3 are meaningless without the
+  previous turn, so this is the core reference-resolution case.
+turns:
+  - user: average yield per hectare in Belgaum for kharif 2025
+    category: first_turn
+    expect: answer
+    intent: NEW_TOPIC
+    note: actual_yield is total kg and must be divided by area_hectares
+    gold_sql: |
+      SELECT avg(c.actual_yield / p.area_hectares) AS yield_per_ha
+      FROM agri.crop_cycle c
+      JOIN agri.plot p ON p.id = c.plot_id
+      WHERE p.district = 'Belgaum'
+        AND c.season = 'kharif'
+        AND c.sown_date >= DATE '2025-01-01' AND c.sown_date < DATE '2026-01-01'
+        AND c.actual_yield IS NOT NULL
+
+  - user: what about Dharwad?
+    category: follow_up
+    expect: answer
+    intent: REFERENCE
+    note: only the district changes; metric, season and year must carry forward
+    gold_sql: |
+      SELECT avg(c.actual_yield / p.area_hectares) AS yield_per_ha
+      FROM agri.crop_cycle c
+      JOIN agri.plot p ON p.id = c.plot_id
+      WHERE p.district = 'Dharwad'
+        AND c.season = 'kharif'
+        AND c.sown_date >= DATE '2025-01-01' AND c.sown_date < DATE '2026-01-01'
+        AND c.actual_yield IS NOT NULL
+
+  - user: now break that down by crop
+    category: follow_up
+    expect: answer
+    intent: REFERENCE
+    note: adds a grouping while keeping district Dharwad and the kharif 2025 window
+    gold_sql: |
+      SELECT c.crop, avg(c.actual_yield / p.area_hectares) AS yield_per_ha
+      FROM agri.crop_cycle c
+      JOIN agri.plot p ON p.id = c.plot_id
+      WHERE p.district = 'Dharwad'
+        AND c.season = 'kharif'
+        AND c.sown_date >= DATE '2025-01-01' AND c.sown_date < DATE '2026-01-01'
+        AND c.actual_yield IS NOT NULL
+      GROUP BY c.crop
+
+  - user: how many field agents do we have?
+    category: follow_up
+    expect: answer
+    intent: NEW_TOPIC
+    note: >
+      The brief's reset case. Shares no subject with the previous three turns;
+      every carried slot must be discarded.
+    gold_sql: |
+      SELECT count(*) AS agent_count FROM agri.field_agent

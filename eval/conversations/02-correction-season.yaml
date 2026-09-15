@@ -1,0 +1,51 @@
+id: correction-season
+title: A season correction mid-conversation
+tags: [correction, yield, refinement]
+note: The brief's correction case - amend the previous query, do not restart.
+turns:
+  - user: average yield per hectare by crop in Mysore for kharif 2025
+    category: first_turn
+    expect: answer
+    intent: NEW_TOPIC
+    gold_sql: |
+      SELECT c.crop, avg(c.actual_yield / p.area_hectares) AS yield_per_ha
+      FROM agri.crop_cycle c
+      JOIN agri.plot p ON p.id = c.plot_id
+      WHERE p.district = 'Mysore'
+        AND c.season = 'kharif'
+        AND c.sown_date >= DATE '2025-01-01' AND c.sown_date < DATE '2026-01-01'
+        AND c.actual_yield IS NOT NULL
+      GROUP BY c.crop
+
+  - user: no, I meant rabi, not kharif
+    category: correction
+    expect: answer
+    intent: CORRECT
+    note: replaces one slot; district, grouping and metric all survive
+    gold_sql: |
+      SELECT c.crop, avg(c.actual_yield / p.area_hectares) AS yield_per_ha
+      FROM agri.crop_cycle c
+      JOIN agri.plot p ON p.id = c.plot_id
+      WHERE p.district = 'Mysore'
+        AND c.season = 'rabi'
+        AND c.sown_date >= DATE '2025-01-01' AND c.sown_date < DATE '2026-01-01'
+        AND c.actual_yield IS NOT NULL
+      GROUP BY c.crop
+
+  - user: only irrigated plots
+    category: follow_up
+    expect: answer
+    intent: REFINE
+    note: >
+      The brief's refinement case. "Irrigated" means irrigation_type is not
+      rainfed, and everything from the corrected query must persist.
+    gold_sql: |
+      SELECT c.crop, avg(c.actual_yield / p.area_hectares) AS yield_per_ha
+      FROM agri.crop_cycle c
+      JOIN agri.plot p ON p.id = c.plot_id
+      WHERE p.district = 'Mysore'
+        AND c.season = 'rabi'
+        AND c.sown_date >= DATE '2025-01-01' AND c.sown_date < DATE '2026-01-01'
+        AND c.actual_yield IS NOT NULL
+        AND p.irrigation_type <> 'rainfed'
+      GROUP BY c.crop
