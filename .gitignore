@@ -28,3 +28,6 @@ CSV.zip
 
 # The assignment brief is the requesting company's document, not mine to publish
 *.pdf
+
+# Local working notes, not part of the deliverable
+.dev/
